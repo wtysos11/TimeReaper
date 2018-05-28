@@ -9,16 +9,73 @@
     mc:Ignorable="d">
 
     <Grid>
-        <ListView ItemsSource="{x:Bind timeReaper.AllItems}">
-            <ListView.ItemTemplate>
-                <DataTemplate x:DataType="md:ListItem">
-                    <Grid Height="100">
-                        <TextBlock Text="{x:Bind title}"/>
-                        <TextBlock Text="{x:Bind notes}"/>
-                    </Grid>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="VisualStateGroup">
+                <VisualState x:Name="VisualStateMin0">
+                    <VisualState.Setters>
+                        <Setter Target="MainRightFramework.(UIElement.Visibility)" Value="Collapsed"/>
+                        <Setter Target="MainLeftFramework.(Grid.ColumnSpan)" Value="2"/>
+                    </VisualState.Setters>
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="1"/>
+                    </VisualState.StateTriggers>
+                </VisualState>
+                <VisualState x:Name="VisualState2">
+                    <VisualState.Setters>
+                        <Setter Target="MainLeftDoneTask.(UIElement.Visibility)" Value="Collapsed"/>
+                    </VisualState.Setters>
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="1000"/>
+                    </VisualState.StateTriggers>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <RelativePanel Grid.Row="0">
+            
+        </RelativePanel>
+        <Grid Grid.Row="1" Grid.ColumnSpan="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Column="0" Name="MainLeftFramework">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <ListView ItemsSource="{x:Bind timeReaper.AllItems}" Grid.Row="0">
+                    <ListView.ItemTemplate>
+                        <DataTemplate x:DataType="md:ListItem">
+                            <Grid Height="100">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="1*"/>
+                                    <ColumnDefinition Width="3*"/>
+                                    <ColumnDefinition Width="3*"/>
+                                    <ColumnDefinition Width="3*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="{x:Bind title}" Grid.Column="1" VerticalAlignment="Center"/>
+                                <CheckBox Grid.Column="0" Height="32" Width="32" VerticalAlignment="Center" IsChecked="{Binding completed,Mode=TwoWay}"/>
+                                <TextBlock Text="{x:Bind deadline}" Grid.Column="3" VerticalAlignment="Center" Margin="50,0,0,0"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+                <!-- 已完成计时任务，平时不显示，宽度不够时显示出来 -->
+                <ListView Grid.Row="1" Height="300" Name="MainLeftDoneTask">
+                    <TextBlock Text="test"/>
+                </ListView>
+            </Grid>
+            <StackPanel Grid.Column="1" Name="MainRightFramework">
+                <!-- 已完成计时任务 -->
+                <ListView>
+                    
+                </ListView>
+            </StackPanel>
+        </Grid>
     </Grid>
     
 </Page>
