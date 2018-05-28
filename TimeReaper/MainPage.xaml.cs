@@ -14,6 +14,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
 // https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x804 上介绍了“空白页”项模板
+using TimeReaper.Classes;
 
 namespace TimeReaper
 {
@@ -25,6 +26,9 @@ namespace TimeReaper
         public MainPage()
         {
             this.InitializeComponent();
+            timeReaper = TimeReaperManager.getInstance();
         }
+
+        TimeReaperManager timeReaper;
     }
 }

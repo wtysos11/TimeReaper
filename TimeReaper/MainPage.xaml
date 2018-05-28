@@ -8,11 +8,17 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <Page.BottomAppBar>
-        <CommandBar>
-            <AppBarButton Name="AddAppBarButton" Label="Add" Click="AddAppBarButton_Click" Icon="Add"/>
-        </CommandBar>
-    </Page.BottomAppBar>
-    
+    <Grid>
+        <ListView ItemsSource="{x:Bind timeReaper.AllItems}">
+            <ListView.ItemTemplate>
+                <DataTemplate x:DataType="md:ListItem">
+                    <Grid Height="100">
+                        <TextBlock Text="{x:Bind title}"/>
+                        <TextBlock Text="{x:Bind notes}"/>
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </Grid>
     
 </Page>

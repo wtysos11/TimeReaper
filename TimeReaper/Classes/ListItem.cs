@@ -43,7 +43,7 @@ namespace TimeReaper.Classes
             this.deadline = nowTime;
         }
 
-        public ListItem(string title, string deadline,string notes="")
+        public ListItem(string title, string deadline, string notes = "")
         {
             this.id = Guid.NewGuid().ToString(); //生成id
             this.title = title;
@@ -51,7 +51,7 @@ namespace TimeReaper.Classes
             this.isCompleted = false; //默认为未完成
             this.notes = notes;
         }
-        public ListItem(string id, string title, string deadline, string notes = " ")
+        public ListItem(string id, string title, string notes, string deadline)
         {
             this.id = id; //生成id
             this.title = title;
