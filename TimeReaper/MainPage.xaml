@@ -8,6 +8,13 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
+    <Page.BottomAppBar>
+        <CommandBar>
+            <AppBarButton Name="AppBarCreateButton" Icon="Add" Label="创建新任务"/>
+            <AppBarButton Name="AppBarSettingButton" Icon="Setting" Label="详细设置"/>
+        </CommandBar>
+    </Page.BottomAppBar>
+    
     <Grid>
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup x:Name="VisualStateGroup">
@@ -34,14 +41,42 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <RelativePanel Grid.Row="0">
-            
+        <!-- 主页面顶层设计，暂时用来放：开始计时相关 -->
+        <RelativePanel Grid.Row="0" Height="200">
+            <ComboBox RelativePanel.AlignVerticalCenterWithPanel="True" 
+                      RelativePanel.LeftOf="MainTopStart" 
+                      Width="150"
+                      FontSize="24"
+                      SelectedValue="正常计时"
+                      Name="MainTopSelect">
+                <ComboBoxItem Content="番茄土豆"/>
+                <ComboBoxItem Content="正常计时"/>
+            </ComboBox>
+            <Button  RelativePanel.AlignHorizontalCenterWithPanel="True" 
+                     RelativePanel.AlignVerticalCenterWithPanel="True" 
+                     Name="MainTopStart" Content="开始计时"  
+                     
+                     Style="{StaticResource generalButton}"/>
+            <TextBlock RelativePanel.AlignVerticalCenterWithPanel="True" 
+                       Name="MainTopShow" 
+                       Visibility="Collapsed" 
+                       FontSize="32" Height="70" Width="150"/>
+            <AppBarButton RelativePanel.AlignVerticalCenterWithPanel="True" RelativePanel.RightOf="MainTopCreate" 
+                          Name="MainTopCancel" 
+                          Icon="Cancel" Label="取消" 
+                          Margin="5"/>
+            <AppBarButton RelativePanel.RightOf="MainTopStart" 
+                          RelativePanel.AlignVerticalCenterWithPanel="True" 
+                          Name="MainTopCreate" 
+                          Icon="Add" Label="创建" 
+                          Margin="5"/>
         </RelativePanel>
         <Grid Grid.Row="1" Grid.ColumnSpan="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
+            <!-- 左侧主体框架，主要放将要完成的任务 -->
             <Grid Grid.Column="0" Name="MainLeftFramework">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -69,6 +104,7 @@
                     <TextBlock Text="test"/>
                 </ListView>
             </Grid>
+            <!--右侧主体框架，现在主要放已经完成的任务，未来可能加上日历 -->
             <StackPanel Grid.Column="1" Name="MainRightFramework">
                 <!-- 已完成计时任务 -->
                 <ListView>

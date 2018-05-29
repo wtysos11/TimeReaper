@@ -30,5 +30,12 @@ namespace TimeReaper
         }
 
         TimeReaperManager timeReaper;
+        string timerMode = "正常计时";
+        //计时器开始计时
+        /*
+         用DateTimeOffset.Now记录下开始时间
+         用DateTimeOffset.Now记录下结束时间
+         使用id拿取ListItem，然后生成TaskItem，存进数据库
+         */
     }
 }

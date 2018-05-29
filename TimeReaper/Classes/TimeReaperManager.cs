@@ -99,6 +99,17 @@ namespace TimeReaper.Classes
 
             this.selectedItem = null;
         }
+        ListItem getListItem(string id)
+        {
+            foreach(ListItem item in allItems)
+            {
+                if(item.getId().Equals(id))
+                {
+                    return item;
+                }
+            }
+            return null;
+        }
 
     }
 }

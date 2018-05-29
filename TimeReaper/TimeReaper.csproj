@@ -95,6 +95,7 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Classes\TaskItem.cs" />
     <Compile Include="Classes\ListItem.cs" />
     <Compile Include="Classes\TimeReaperManager.cs" />
     <Compile Include="MainPage.xaml.cs">
