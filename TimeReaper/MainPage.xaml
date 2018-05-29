@@ -45,17 +45,17 @@
         <RelativePanel Grid.Row="0" Height="200">
             <ComboBox RelativePanel.AlignVerticalCenterWithPanel="True" 
                       RelativePanel.LeftOf="MainTopStart" 
-                      Width="150"
-                      FontSize="24"
-                      SelectedValue="正常计时"
+                      Width="180"
+                      FontSize="32"
+                      SelectedIndex="1"
                       Name="MainTopSelect">
-                <ComboBoxItem Content="番茄土豆"/>
+                <ComboBoxItem Content="番茄钟计时"/>
                 <ComboBoxItem Content="正常计时"/>
             </ComboBox>
             <Button  RelativePanel.AlignHorizontalCenterWithPanel="True" 
                      RelativePanel.AlignVerticalCenterWithPanel="True" 
                      Name="MainTopStart" Content="开始计时"  
-                     
+                     Click="MainTopStart_Click"
                      Style="{StaticResource generalButton}"/>
             <TextBlock RelativePanel.AlignVerticalCenterWithPanel="True" 
                        Name="MainTopShow" 
@@ -63,7 +63,8 @@
                        FontSize="32" Height="70" Width="150"/>
             <AppBarButton RelativePanel.AlignVerticalCenterWithPanel="True" RelativePanel.RightOf="MainTopCreate" 
                           Name="MainTopCancel" 
-                          Icon="Cancel" Label="取消" 
+                          Icon="Cancel" Label="中断" 
+                          Click="MainTopCancel_Click"
                           Margin="5"/>
             <AppBarButton RelativePanel.RightOf="MainTopStart" 
                           RelativePanel.AlignVerticalCenterWithPanel="True" 
