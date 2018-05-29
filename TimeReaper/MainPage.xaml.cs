@@ -38,9 +38,9 @@ namespace TimeReaper
         DateTimeOffset endTime;
 
         //番茄钟相关
-        int pomotodoWorkInterval = 1;//默认为25分钟
-        int pomotodoShortBreak = 1;//默认为5分钟
-        int pomotodoLongBreak = 1;//默认为15分钟
+        int pomotodoWorkInterval = 25;//默认为25分钟
+        int pomotodoShortBreak = 5;//默认为5分钟
+        int pomotodoLongBreak = 15;//默认为15分钟
         int pomotodoPeriod = 0;//短休息数量，3次短休息后一次长休息，当pomotodoPeriod==3时进行一次长休息
         bool work = false;//是否处于休息状态
         bool isPressButton = false;//用户是否按下按钮（番茄钟能否切换到下一个状态）

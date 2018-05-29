@@ -14,11 +14,12 @@ namespace TimeReaper.Classes
         private SQLiteConnection conn;
         private ObservableCollection<ListItem> allItems = new ObservableCollection<ListItem>();
         public ObservableCollection<ListItem> AllItems { get { return this.allItems; } }
+        private ObservableCollection<TaskItem> allTasks = new ObservableCollection<TaskItem>();
+        public ObservableCollection<TaskItem> AllITasks { get { return this.allTasks; } }
 
         private ListItem selectedItem;
         public ListItem SelectedItem { get { return selectedItem; } set { this.selectedItem = value; } }
-
-        public bool first = false;
+        
         private static TimeReaperManager _instance;
         public static TimeReaperManager getInstance()
         {
