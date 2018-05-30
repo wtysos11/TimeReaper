@@ -4,6 +4,8 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.UI;
+using Windows.UI.Xaml.Media;
 
 namespace TimeReaper.Classes
 {
@@ -11,6 +13,19 @@ namespace TimeReaper.Classes
     {
         private string id;
         private bool isCompleted;
+
+        private bool done;
+        public bool isDoing
+        {
+            get
+            {
+                return done;
+            }
+            set
+            {
+                done = value;
+            }
+        }
 
         public string getId() { return id; }
         public void setID(string _id)
@@ -50,6 +65,8 @@ namespace TimeReaper.Classes
             SetTime(deadline);
             this.isCompleted = false; //默认为未完成
             this.notes = notes;
+
+            isDoing = false;
         }
         public ListItem(string id, string title, string notes, string deadline)
         {
@@ -58,6 +75,10 @@ namespace TimeReaper.Classes
             SetTime(deadline);
             this.isCompleted = false; //默认为未完成
             this.notes = notes;
+
+            isDoing = false;
         }
+
+
     }
 }

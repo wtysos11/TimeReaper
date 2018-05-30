@@ -12,6 +12,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using System.Diagnostics;
 
 // https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x804 上介绍了“空白页”项模板
 using TimeReaper.Classes;
@@ -27,10 +28,12 @@ namespace TimeReaper
         {
             this.InitializeComponent();
             timeReaper = TimeReaperManager.getInstance();
+            doingTask = new List<ListItem>();
             timer = null;
         }
         //储存结构
         TimeReaperManager timeReaper;
+        List<ListItem> doingTask;//计时阶段做过的任务
 
         //计时器相关
         DispatcherTimer timer;
@@ -44,7 +47,7 @@ namespace TimeReaper
         int pomotodoPeriod = 0;//短休息数量，3次短休息后一次长休息，当pomotodoPeriod==3时进行一次长休息
         bool work = false;//是否处于休息状态
         bool isPressButton = false;//用户是否按下按钮（番茄钟能否切换到下一个状态）
-        bool needPress = false;//用户是否需要按下按钮（计时器抵达终点）
+        bool needPress = false;//用户是否需要按下按钮（计时器抵达终点，按钮等待点击以提交任务）
 
         /*正计时函数*/
         private void Timer_Tick(object sender, object e)
@@ -216,5 +219,30 @@ namespace TimeReaper
             }
 
         }
+
+        /*
+         * 使用list<ListItem> 来维护将计时任务中曾工作过的对象
+         * 
+         主页面左侧列表的点击事件
+         如果番茄计时结束或正在进行计时的时候点击列表中的元素：
+            1.元素改变颜色
+            2.元素加入到删除列表之中
+        在番茄工作时间结束或是计时的中断：
+            更新并加入数据库中
+             */
+        private void MainLeftItemList_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            ListItem listitem = e.ClickedItem as ListItem;
+            if(!listitem.isDoing)//加入删除列表
+            { 
+
+            }
+            else//移除删除列表
+            {
+
+            }
+            listitem.isDoing = !listitem.isDoing;
+        }
     }
+ 
 }

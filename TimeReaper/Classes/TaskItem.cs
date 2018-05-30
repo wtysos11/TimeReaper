@@ -12,6 +12,7 @@ namespace TimeReaper.Classes
         DateTimeOffset beginTime;
         DateTimeOffset endTime;
         ListItem item;//ListItem id
+        string title;
         TaskItem(ListItem item,DateTimeOffset begin,DateTimeOffset end)
         {
             beginTime = begin;
