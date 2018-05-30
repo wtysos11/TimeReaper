@@ -56,6 +56,7 @@ namespace TimeReaper.Classes
             dateFormat.ShortDatePattern = "yyyy/MM/dd";
             DateTime nowTime = Convert.ToDateTime(deadline, dateFormat);
             this.deadline = nowTime;
+            //this.deadline = DateTime.Now;
         }
 
         public ListItem(string title, string deadline, string notes = "")

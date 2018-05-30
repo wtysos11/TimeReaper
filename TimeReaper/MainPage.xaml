@@ -16,106 +16,130 @@
     </Page.BottomAppBar>
     
     <Grid>
-        <VisualStateManager.VisualStateGroups>
-            <VisualStateGroup x:Name="VisualStateGroup">
-                <VisualState x:Name="VisualStateMin0">
-                    <VisualState.Setters>
-                        <Setter Target="MainRightFramework.(UIElement.Visibility)" Value="Collapsed"/>
-                        <Setter Target="MainLeftFramework.(Grid.ColumnSpan)" Value="2"/>
-                    </VisualState.Setters>
-                    <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="1"/>
-                    </VisualState.StateTriggers>
-                </VisualState>
-                <VisualState x:Name="VisualState2">
-                    <VisualState.Setters>
-                        <Setter Target="MainLeftDoneTask.(UIElement.Visibility)" Value="Collapsed"/>
-                    </VisualState.Setters>
-                    <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="1000"/>
-                    </VisualState.StateTriggers>
-                </VisualState>
-            </VisualStateGroup>
-        </VisualStateManager.VisualStateGroups>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-        <!-- 主页面顶层设计，暂时用来放：开始计时相关 -->
-        <RelativePanel Grid.Row="0" Height="200">
-            <ComboBox RelativePanel.AlignVerticalCenterWithPanel="True" 
-                      RelativePanel.LeftOf="MainTopStart" 
-                      Width="180"
-                      FontSize="32"
-                      SelectedIndex="1"
-                      Name="MainTopSelect">
-                <ComboBoxItem Content="番茄钟计时"/>
-                <ComboBoxItem Content="正常计时"/>
-            </ComboBox>
-            <Button  RelativePanel.AlignHorizontalCenterWithPanel="True" 
-                     RelativePanel.AlignVerticalCenterWithPanel="True" 
-                     Name="MainTopStart" Content="开始计时"  
-                     Click="MainTopStart_Click"
-                     Style="{StaticResource generalButton}"/>
-            <TextBlock RelativePanel.AlignVerticalCenterWithPanel="True" 
-                       Name="MainTopShow" 
-                       Visibility="Collapsed" 
-                       FontSize="32" Height="70" Width="150"/>
-            <AppBarButton RelativePanel.AlignVerticalCenterWithPanel="True" RelativePanel.RightOf="MainTopCreate" 
-                          Name="MainTopCancel" 
-                          Icon="Cancel" Label="中断" 
-                          Click="MainTopCancel_Click"
-                          Margin="5"/>
-            <AppBarButton RelativePanel.RightOf="MainTopStart" 
-                          RelativePanel.AlignVerticalCenterWithPanel="True" 
-                          Name="MainTopCreate" 
-                          Icon="Add" Label="创建" 
-                          Margin="5"/>
-        </RelativePanel>
-        <Grid Grid.Row="1" Grid.ColumnSpan="2">
+        <Image Source="ms-appx:///Assets/background.png" Stretch="UniformToFill" Opacity="0.7"/>
+        <Grid>
+            <VisualStateManager.VisualStateGroups>
+                <VisualStateGroup x:Name="VisualStateGroup">
+                    <VisualState x:Name="VisualStateMin0">
+                        <VisualState.Setters>
+                            <Setter Target="MainRightFramework.(UIElement.Visibility)" Value="Collapsed"/>
+                            <Setter Target="MainLeftFramework.(Grid.ColumnSpan)" Value="2"/>
+                        </VisualState.Setters>
+                        <VisualState.StateTriggers>
+                            <AdaptiveTrigger MinWindowWidth="1"/>
+                        </VisualState.StateTriggers>
+                    </VisualState>
+                    <VisualState x:Name="VisualState2">
+                        <VisualState.Setters>
+                            <Setter Target="MainLeftDoneTask.(UIElement.Visibility)" Value="Collapsed"/>
+                        </VisualState.Setters>
+                        <VisualState.StateTriggers>
+                            <AdaptiveTrigger MinWindowWidth="1000"/>
+                        </VisualState.StateTriggers>
+                    </VisualState>
+                </VisualStateGroup>
+            </VisualStateManager.VisualStateGroups>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <!-- 左侧主体框架，主要放将要完成的任务 -->
-            <Grid Grid.Column="0" Name="MainLeftFramework">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-                <ListView Name="MainLeftItemList" ItemsSource="{x:Bind timeReaper.AllItems}" Grid.Row="0" ItemClick="MainLeftItemList_ItemClick" IsItemClickEnabled="True">
-                    <ListView.ItemTemplate>
-                        <DataTemplate x:DataType="md:ListItem">
-                            <Grid Height="100">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="1*"/>
-                                    <ColumnDefinition Width="3*"/>
-                                    <ColumnDefinition Width="3*"/>
-                                    <ColumnDefinition Width="3*"/>
-                                </Grid.ColumnDefinitions>
-                                <TextBlock Text="{x:Bind title}" Grid.Column="1" VerticalAlignment="Center"/>
-                                <CheckBox Grid.Column="0" Height="32" Width="32" VerticalAlignment="Center" IsChecked="{Binding completed,Mode=TwoWay}"/>
-                                <Grid  Grid.Column="3" VerticalAlignment="Center" Margin="20">
-                                    <TextBlock Text="提交工作过的任务" Margin="10"/>
-                                    <CheckBox Height="32" Width="32" VerticalAlignment="Center" IsChecked="{Binding isDoing,Mode=TwoWay}"/>
-                                </Grid>    
-                                <TextBlock Text="{x:Bind deadline}" Grid.Column="2" VerticalAlignment="Center" Margin="50,0,0,0"/>
-                            </Grid>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
-                <!-- 已完成计时任务，平时不显示，宽度不够时显示出来 -->
-                <ListView Grid.Row="1" Height="300" Name="MainLeftDoneTask">
-                    <TextBlock Text="test"/>
-                </ListView>
+            <TextBlock Grid.Column="0" Text="Time Reaper" VerticalAlignment="Center" Margin="30,0,0,0" FontSize="64" FontWeight="Light"></TextBlock>
+            <!-- 主页面顶层设计，暂时用来放：开始计时相关 -->
+            <RelativePanel Grid.Column="1" Grid.Row="0" Height="150" HorizontalAlignment="Right" Width="480">
+                <ComboBox RelativePanel.AlignVerticalCenterWithPanel="True" 
+                      RelativePanel.LeftOf="MainTopStart" 
+                      Width="160"
+                      Header="  计时类型："
+                      SelectedIndex="1"
+                      Name="MainTopSelect">
+                    <ComboBoxItem Content="番茄钟计时"/>
+                    <ComboBoxItem Content="正常计时"/>
+                </ComboBox>
+                <Button  RelativePanel.AlignHorizontalCenterWithPanel="True" 
+                     RelativePanel.AlignVerticalCenterWithPanel="True" 
+                     Name="MainTopStart" Content="开始计时"  
+                     Click="MainTopStart_Click"
+                     Height="64"
+                     Width="120"
+                     FontSize="20"
+                     Style="{StaticResource generalButton}"/>
+                <TextBlock RelativePanel.AlignVerticalCenterWithPanel="True" 
+                       Name="MainTopShow" 
+                       Visibility="Collapsed" 
+                       FontSize="32" Height="70" Width="150"/>
+                <AppBarButton RelativePanel.AlignVerticalCenterWithPanel="True" RelativePanel.RightOf="MainTopCreate" 
+                          Name="MainTopCancel" 
+                          Icon="Cancel" Label="中断" 
+                          Click="MainTopCancel_Click"
+                          Margin="5"/>
+                <AppBarButton RelativePanel.RightOf="MainTopStart" 
+                          RelativePanel.AlignVerticalCenterWithPanel="True" 
+                          Name="MainTopCreate" 
+                          Icon="Add" Label="创建" 
+                          Margin="5"/>
+            </RelativePanel>
+            <Grid Grid.Row="1" Grid.ColumnSpan="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <!-- 左侧主体框架，主要放将要完成的任务 -->
+                <Grid Grid.Column="0" Name="MainLeftFramework">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="2*"/>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Text="将要完成的任务" FontWeight="SemiBold" Margin="40,0,0,0"></TextBlock>
+                    <ScrollViewer Grid.Row="1">
+                        <ListView Name="MainLeftItemList" ItemsSource="{x:Bind timeReaper.AllItems}" ItemClick="MainLeftItemList_ItemClick" IsItemClickEnabled="True">
+                            <ListView.ItemTemplate>
+                                <DataTemplate x:DataType="md:ListItem">
+                                    <Grid Height="100">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="32"/>
+                                            <ColumnDefinition Width="60"/>
+                                            <ColumnDefinition Width="150"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="{x:Bind title}" Grid.Column="1" VerticalAlignment="Center"/>
+                                        <CheckBox Grid.Column="0" Height="32" Width="32" VerticalAlignment="Center" IsChecked="{Binding completed,Mode=TwoWay}"/>
+                                        <Grid Grid.Column="3" VerticalAlignment="Center" Width="80" HorizontalAlignment="Right">
+                                            <CheckBox Height="32" Width="32" VerticalAlignment="Center" IsChecked="{Binding isDoing,Mode=TwoWay}"/>
+                                            <TextBlock Text="提交" Width="180" Margin="30,6,0,0"/>
+                                        </Grid>
+                                        <TextBlock Text="{x:Bind deadline}" Grid.Column="2" VerticalAlignment="Center"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </ScrollViewer>
+                    <!-- 已完成计时任务，平时不显示，宽度不够时显示出来 -->
+                    <TextBlock Grid.Row="2" Text="已完成的计时任务" FontWeight="SemiBold" Margin="40,0,0,0"></TextBlock>
+                    <ScrollViewer Grid.Row="3">
+                        <ListView Height="300" Name="MainLeftDoneTask">
+                            <TextBlock Text="test"/>
+                            <TextBlock Text="test"/>
+                            <TextBlock Text="test"/>
+                            <TextBlock Text="test"/>
+                        </ListView>
+                    </ScrollViewer>
+                </Grid>
+
+                <!--右侧主体框架，现在主要放已经完成的任务，未来可能加上日历 -->
+                <StackPanel Grid.Column="1" Name="MainRightFramework">
+                    <!-- 已完成计时任务 -->
+                    <ListView>
+
+                    </ListView>
+                </StackPanel>
             </Grid>
-            <!--右侧主体框架，现在主要放已经完成的任务，未来可能加上日历 -->
-            <StackPanel Grid.Column="1" Name="MainRightFramework">
-                <!-- 已完成计时任务 -->
-                <ListView>
-                    
-                </ListView>
-            </StackPanel>
         </Grid>
     </Grid>
     
