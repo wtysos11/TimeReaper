@@ -28,17 +28,17 @@ namespace TimeReaper
         {
             this.InitializeComponent();
             timeReaper = TimeReaperManager.getInstance();
-            doingTask = new List<ListItem>();
             timer = null;
+            timerState = 0;
         }
         //储存结构
         TimeReaperManager timeReaper;
-        List<ListItem> doingTask;//计时阶段做过的任务
 
         //计时器相关
         DispatcherTimer timer;
         DateTimeOffset beginTime;
         DateTimeOffset endTime;
+        int timerState;//0表示没有工作，1表示正常计时，2表示番茄钟计时
 
         //番茄钟相关
         int pomotodoWorkInterval = 25;//默认为25分钟
@@ -49,30 +49,33 @@ namespace TimeReaper
         bool isPressButton = false;//用户是否按下按钮（番茄钟能否切换到下一个状态）
         bool needPress = false;//用户是否需要按下按钮（计时器抵达终点，按钮等待点击以提交任务）
 
+
         /*正计时函数*/
         private void Timer_Tick(object sender, object e)
         {
-            int realHour = DateTimeOffset.Now.Hour - beginTime.Hour;
-            int realMinute = DateTimeOffset.Now.Minute - beginTime.Minute;
-            int realSecond = DateTimeOffset.Now.Second - beginTime.Second;
-            if(realSecond < 0)
+            if(!needPress)
             {
-                realSecond += 60;
-                realMinute--;
-            }
-            if(realHour>0)
-            {
-                realMinute += realHour * 60;
-            }
+                int realHour = DateTimeOffset.Now.Hour - beginTime.Hour;
+                int realMinute = DateTimeOffset.Now.Minute - beginTime.Minute;
+                int realSecond = DateTimeOffset.Now.Second - beginTime.Second;
+                if (realSecond < 0)
+                {
+                    realSecond += 60;
+                    realMinute--;
+                }
+                if (realHour > 0)
+                {
+                    realMinute += realHour * 60;
+                }
 
-            string strMinute = realMinute.ToString();
-            string strSecond = realSecond.ToString();
-            if(realSecond<10)
-            {
-                strSecond = "0" + strSecond;
+                string strMinute = realMinute.ToString();
+                string strSecond = realSecond.ToString();
+                if (realSecond < 10)
+                {
+                    strSecond = "0" + strSecond;
+                }
+                MainTopStart.Content = strMinute + ":" + strSecond;
             }
-            MainTopStart.Content = strMinute + ":" + strSecond;
-
         }
 
         /*番茄计时函数*/
@@ -132,12 +135,11 @@ namespace TimeReaper
                 pomotodoPeriod++;
                 if (work)//工作结束，将列表中提交的任务进行结束计时装载
                 {
-                    foreach(ListItem listitem in doingTask)
+                    foreach (ListItem listitem in timeReaper.AllItems)
                     {
                         timeReaper.AddTaskItem(listitem.getId(), beginTime, DateTimeOffset.Now);
                         listitem.isDoing = false;
                     }
-                    doingTask.Clear();
                 }
 
                 beginTime = DateTimeOffset.Now;
@@ -190,12 +192,15 @@ namespace TimeReaper
                 timer.Interval = new TimeSpan(0, 0, 1);
                 if(timerMode.Equals("正常计时"))
                 {
+                    timerState = 1;
                     timer.Tick += Timer_Tick;
                     beginTime = DateTimeOffset.Now;
+                    needPress = false;
                     timer.Start();
                 }
                 else if(timerMode.Equals("番茄钟计时"))
                 {
+                    timerState = 2;
                     timer.Tick += Pomotodo_Tick;
                     beginTime = DateTimeOffset.Now;
                     work = true;
@@ -203,10 +208,32 @@ namespace TimeReaper
                     timer.Start();
                 }
             }
-
-            if(needPress)
+            else
             {
-                isPressButton = true;
+                if (timerState == 2 && needPress)
+                {
+                    isPressButton = true;
+                }
+                else if (timerState == 1 && !needPress)
+                {
+                    needPress = true;
+                    isPressButton = false;
+                    MainTopStart.Content = "暂停，点击提交";
+                }
+                else if (timerState == 1 && needPress && !isPressButton)
+                {
+                    isPressButton = true;
+                    needPress = false;
+                    foreach (ListItem listitem in timeReaper.AllItems)
+                    {
+                        timeReaper.AddTaskItem(listitem.getId(), beginTime, DateTimeOffset.Now);
+                        listitem.isDoing = false;
+                    }
+                    MainTopStart.Content = "开始计时";
+                    timer.Stop();
+                    timer = null;
+                    timerState = 0;
+                }
             }
         }
 
@@ -221,6 +248,7 @@ namespace TimeReaper
                 endTime = DateTimeOffset.Now;
                 timer = null;
                 MainTopStart.Content = "开始计时";
+                timerState = 0;
             }
 
         }
@@ -248,6 +276,8 @@ namespace TimeReaper
             }
             listitem.isDoing = !listitem.isDoing;
         }
+
+
     }
  
 }
