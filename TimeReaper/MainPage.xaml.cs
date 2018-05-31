@@ -30,6 +30,7 @@ namespace TimeReaper
             timeReaper = TimeReaperManager.getInstance();
             timer = null;
             timerState = 0;
+
         }
         //储存结构
         TimeReaperManager timeReaper;
