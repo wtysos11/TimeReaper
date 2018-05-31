@@ -15,7 +15,7 @@ namespace TimeReaper.Classes
         private ObservableCollection<ListItem> allItems = new ObservableCollection<ListItem>();
         public ObservableCollection<ListItem> AllItems { get { return this.allItems; } }
         private ObservableCollection<TaskItem> allTasks = new ObservableCollection<TaskItem>();
-        public ObservableCollection<TaskItem> AllITasks { get { return this.allTasks; } }
+        public ObservableCollection<TaskItem> AllTasks { get { return this.allTasks; } }
 
         private ListItem selectedItem;
         public ListItem SelectedItem { get { return selectedItem; } set { this.selectedItem = value; } }
@@ -46,6 +46,18 @@ namespace TimeReaper.Classes
                     this.allItems.Add(item);
                 }
             }
+            using (var statement = conn.Prepare("CREATE TABLE IF NOT EXISTS tasklist (id CHAR(36),taskId CHAR(36),beginTime DATETIME,endtime DATETIME, PRIMARY KEY (taskId));"))
+            {
+                statement.Step();
+            }
+            using (var statement = conn.Prepare("SELECT * FROM tasklist;"))
+            {
+                while (statement.Step() == SQLiteResult.ROW)
+                {
+                    TaskItem task = createDoingTask((string)statement[0], (string)statement[1], (string)statement[2],(string) statement[3]);
+                    this.allTasks.Add(task);
+                }
+            }
         }
 
         public void AddTodoItem(string title, string notes, string time)
@@ -53,7 +65,7 @@ namespace TimeReaper.Classes
 
             this.allItems.Add(new ListItem(title, notes, time));
             ListItem item = allItems[allItems.Count - 1];
-            using (var statement = conn.Prepare("INSERT INTO todolist VALUES(?,?,?,?)"))
+            using (var statement = conn.Prepare("INSERT INTO todolist VALUES(?,?,?,?);"))
             {
                 statement.Bind(1, item.getId());
                 statement.Bind(2, item.title);
@@ -63,6 +75,20 @@ namespace TimeReaper.Classes
                 dateFormat.ShortDatePattern = "yyyy/MM/dd";
                 DateTime nowTime = Convert.ToDateTime(item.deadline, dateFormat);
                 statement.Bind(4, nowTime.Year.ToString() + "-" + nowTime.Month.ToString() + "-" + nowTime.Day.ToString());
+                statement.Step();
+            }
+        }
+        public void AddTaskItem(string id, DateTimeOffset beginTime, DateTimeOffset endTime)
+        {
+            TaskItem item = createDoingTask(id, beginTime, endTime);
+            allTasks.Add(item);
+            using (var statement = conn.Prepare("INSERT INTO tasklist VALUES(?,?,?,?);"))
+            {
+                statement.Bind(1, item.getId());
+                statement.Bind(2, item.getTaskId());
+                statement.Bind(3, item.getStrTime(beginTime));
+                statement.Bind(4, item.getStrTime(endTime));
+                
                 statement.Step();
             }
         }
@@ -78,29 +104,48 @@ namespace TimeReaper.Classes
             this.selectedItem = null;
         }
 
-        public void UpdateTodoItem(string time, string title, string notes, string graph)
+        public void RemoveTaskitem(TaskItem item)
         {
-            this.selectedItem.title = title;
-            this.selectedItem.notes = notes;
-            this.selectedItem.SetTime(time);
+            using (var statement = conn.Prepare("DELETE FROM tasklist WHERE id = ?;"))
+            {
+                statement.Bind(1, item.getTaskId());
+                statement.Step();
+            }
+            this.allTasks.Remove(item);
+        }
+
+        public void UpdateTodoItem(ListItem item)
+        {
             using (var statement = conn.Prepare("UPDATE todolist SET title = ?,notes = ?,deadline = ? WHERE id = ?;"))
             {
-                statement.Bind(1, title);
-                statement.Bind(2, notes);
+                statement.Bind(1, item.title);
+                statement.Bind(2, item.notes);
 
                 DateTimeFormatInfo dateFormat = new DateTimeFormatInfo();
                 dateFormat.ShortDatePattern = "yyyy/MM/dd";
-                DateTime nowTime = Convert.ToDateTime(this.selectedItem.deadline, dateFormat);
+                DateTime nowTime = Convert.ToDateTime(item.deadline, dateFormat);
                 statement.Bind(3, nowTime.Year.ToString() + "-" + nowTime.Month.ToString() + "-" + nowTime.Day.ToString());
-                statement.Bind(4, graph);
-                statement.Bind(5, this.selectedItem.getId());
+                statement.Bind(4, item.getId());
+
+                statement.Step();
+            }
+            
+        }
+
+        public void UpdateTaskItem(TaskItem item)
+        {
+            using (var statement = conn.Prepare("UPDATE tasklist SET id = ?,beginTime = ?,endTime = ? WHERE taskId = ?;"))
+            {
+                statement.Bind(1, item.getId());
+                statement.Bind(2, item.getStrTime(item.beginTime));
+                statement.Bind(3, item.getStrTime(item.endTime));
+                statement.Bind(4, item.getTaskId());
 
                 statement.Step();
             }
 
-            this.selectedItem = null;
         }
-        ListItem getListItem(string id)
+        public ListItem getListItem(string id)
         {
             foreach(ListItem item in allItems)
             {
@@ -112,5 +157,34 @@ namespace TimeReaper.Classes
             return null;
         }
 
+        public TaskItem createDoingTask(string id, DateTimeOffset beginTime,DateTimeOffset endTime)
+        {
+            ListItem item = this.getListItem(id);
+            return new TaskItem(item, beginTime, endTime);
+        }
+        public TaskItem createDoingTask(string id, string bTime, string eTime)
+        {
+            DateTimeFormatInfo dateFormat = new DateTimeFormatInfo();
+            dateFormat.ShortDatePattern = "yyyy/MM/dd/hh/mm/ss";
+            DateTime begintime = Convert.ToDateTime(bTime, dateFormat);
+            DateTime endtime = Convert.ToDateTime(eTime, dateFormat);
+
+            DateTimeOffset beginTime = new DateTimeOffset(begintime);
+            DateTimeOffset endTime = new DateTimeOffset(endtime);
+            ListItem item = this.getListItem(id);
+            return new TaskItem(item, beginTime, endTime);
+        }
+        public TaskItem createDoingTask(string id,string taskId, string bTime, string eTime)
+        {
+            DateTimeFormatInfo dateFormat = new DateTimeFormatInfo();
+            dateFormat.ShortDatePattern = "yyyy/MM/dd/hh/mm/ss";
+            DateTime begintime = Convert.ToDateTime(bTime, dateFormat);
+            DateTime endtime = Convert.ToDateTime(eTime, dateFormat);
+
+            DateTimeOffset beginTime = new DateTimeOffset(begintime);
+            DateTimeOffset endTime = new DateTimeOffset(endtime);
+            ListItem item = this.getListItem(id);
+            return new TaskItem(item, beginTime, endTime,taskId);
+        }
     }
 }

@@ -130,9 +130,14 @@ namespace TimeReaper
                     pomotodoPeriod = 0;
                 }
                 pomotodoPeriod++;
-                if (work)//工作结束，进行结束计时装载
+                if (work)//工作结束，将列表中提交的任务进行结束计时装载
                 {
-
+                    foreach(ListItem listitem in doingTask)
+                    {
+                        timeReaper.AddTaskItem(listitem.getId(), beginTime, DateTimeOffset.Now);
+                        listitem.isDoing = false;
+                    }
+                    doingTask.Clear();
                 }
 
                 beginTime = DateTimeOffset.Now;

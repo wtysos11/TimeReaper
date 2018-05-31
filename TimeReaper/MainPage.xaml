@@ -105,15 +105,41 @@
                     </ListView.ItemTemplate>
                 </ListView>
                 <!-- 已完成计时任务，平时不显示，宽度不够时显示出来 -->
-                <ListView Grid.Row="1" Height="300" Name="MainLeftDoneTask">
-                    <TextBlock Text="test"/>
+                <ListView Grid.Row="1" Height="300" Name="MainLeftDoneTask" ItemsSource="{x:Bind timeReaper.AllTasks}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate x:DataType="md:TaskItem">
+                            <Grid Height="100">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="2*"/>
+                                    <ColumnDefinition Width="3*"/>
+                                    <ColumnDefinition Width="3*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="{x:Bind title}"/>
+                                <TextBlock Grid.Column="1" Text="{x:Bind beginTime}"/>
+                                <TextBlock Grid.Column="2" Text="{x:Bind endTime}"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
                 </ListView>
             </Grid>
             <!--右侧主体框架，现在主要放已经完成的任务，未来可能加上日历 -->
             <StackPanel Grid.Column="1" Name="MainRightFramework">
                 <!-- 已完成计时任务 -->
-                <ListView>
-                    
+                <ListView Name="MainRightDoneTask" ItemsSource="{x:Bind timeReaper.AllTasks}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate x:DataType="md:TaskItem">
+                            <Grid Height="100">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="2*"/>
+                                    <ColumnDefinition Width="3*"/>
+                                    <ColumnDefinition Width="3*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="{x:Bind title}"/>
+                                <TextBlock Grid.Column="1" Text="{x:Bind beginTime}"/>
+                                <TextBlock Grid.Column="2" Text="{x:Bind endTime}"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
                 </ListView>
             </StackPanel>
         </Grid>
