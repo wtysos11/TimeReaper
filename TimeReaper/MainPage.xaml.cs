@@ -39,17 +39,14 @@ namespace TimeReaper
         DateTimeOffset beginTime;
         DateTimeOffset endTime;
         int timerState;//0表示没有工作，1表示正常计时，2表示番茄钟计时
-
+        bool needPress = false;//用户是否需要按下按钮（计时器抵达终点或者用户暂停，按钮等待点击以提交任务）
         //番茄钟相关
-        int pomotodoWorkInterval = 25;//默认为25分钟
-        int pomotodoShortBreak = 5;//默认为5分钟
-        int pomotodoLongBreak = 15;//默认为15分钟
+        int pomotodoWorkInterval = 1;//默认为25分钟
+        int pomotodoShortBreak = 1;//默认为5分钟
+        int pomotodoLongBreak = 2;//默认为15分钟
         int pomotodoPeriod = 0;//短休息数量，3次短休息后一次长休息，当pomotodoPeriod==3时进行一次长休息
         bool work = false;//是否处于休息状态
-        bool isPressButton = false;//用户是否按下按钮（番茄钟能否切换到下一个状态）
-        bool needPress = false;//用户是否需要按下按钮（计时器抵达终点，按钮等待点击以提交任务）
-
-
+        
         /*正计时函数*/
         private void Timer_Tick(object sender, object e)
         {
@@ -114,7 +111,6 @@ namespace TimeReaper
             if (realMinute == -1 && realSecond == 60)//计时器倒计时达到界限
             {
                 needPress = true;
-                isPressButton = false;
                 if(work)
                 {
                     MainTopStart.Content = "点击休息";
@@ -125,44 +121,7 @@ namespace TimeReaper
                 }
             }
 
-            //进入下一步
-            if(needPress && isPressButton)
-            {
-                if (pomotodoPeriod == 4)
-                {
-                    pomotodoPeriod = 0;
-                }
-                pomotodoPeriod++;
-                if (work)//工作结束，将列表中提交的任务进行结束计时装载
-                {
-                    foreach (ListItem listitem in timeReaper.AllItems)
-                    {
-                        timeReaper.AddTaskItem(listitem.getId(), beginTime, DateTimeOffset.Now);
-                        listitem.isDoing = false;
-                    }
-                }
-
-                beginTime = DateTimeOffset.Now;
-                work = !work;
-                needPress = false;
-
-                //直接刷新下一个状态的realMinute
-                if (work)
-                {
-                    realMinute = pomotodoWorkInterval;
-                }
-                else if (!work && pomotodoPeriod == 3)
-                {
-                    realMinute = pomotodoLongBreak;
-                }
-                else
-                {
-                    realMinute = pomotodoShortBreak;
-                }
-                realSecond = 0;
-                
-            }
-            else if(needPress && !isPressButton)
+            if(needPress)
             {
                 return;//等待用户按下按钮，计时器暂停
             }
@@ -210,30 +169,54 @@ namespace TimeReaper
             }
             else
             {
-                if (timerState == 2 && needPress)
+                if (timerState == 2)
                 {
-                    isPressButton = true;
-                }
-                else if (timerState == 1 && !needPress)
-                {
-                    needPress = true;
-                    isPressButton = false;
-                    MainTopStart.Content = "暂停，点击提交";
-                }
-                else if (timerState == 1 && needPress && !isPressButton)
-                {
-                    isPressButton = true;
-                    needPress = false;
-                    foreach (ListItem listitem in timeReaper.AllItems)
+                    if(needPress)
                     {
-                        timeReaper.AddTaskItem(listitem.getId(), beginTime, DateTimeOffset.Now);
-                        listitem.isDoing = false;
+                        if (pomotodoPeriod == 3)//第3次为长休息，休息完以后归0
+                        {
+                            pomotodoPeriod = 0;
+                        }
+                        if (work)//每次工作完毕后，休息记录加1
+                            pomotodoPeriod++;
+
+
+                        
+                        if (work)//工作结束，将列表中提交的任务进行结束计时装载
+                        {
+                            foreach (ListItem listitem in timeReaper.AllItems)
+                            {
+                                timeReaper.AddTaskItem(listitem.getId(), beginTime, DateTimeOffset.Now);
+                                listitem.isDoing = false;
+                            }
+                        }
+                        beginTime = DateTimeOffset.Now;
+                        work = !work;
+                        needPress = false;
                     }
-                    MainTopStart.Content = "开始计时";
-                    timer.Stop();
-                    timer = null;
-                    timerState = 0;
                 }
+                else if(timerState == 1)
+                {
+                    if (!needPress)
+                    {
+                        needPress = true;
+                        MainTopStart.Content = "暂停，点击提交";
+                    }
+                    else
+                    {
+                        needPress = false;
+                        foreach (ListItem listitem in timeReaper.AllItems)
+                        {
+                            timeReaper.AddTaskItem(listitem.getId(), beginTime, DateTimeOffset.Now);
+                            listitem.isDoing = false;
+                        }
+                        MainTopStart.Content = "开始计时";
+                        timer.Stop();
+                        timer = null;
+                        timerState = 0;
+                    }
+                }
+
             }
         }
 
@@ -277,7 +260,11 @@ namespace TimeReaper
             listitem.isDoing = !listitem.isDoing;
         }
 
+        /*创建新的任务，跳转到新的页面*/
+        private void CreateNewItem(object sender, RoutedEventArgs e)
+        {
 
+        }
     }
  
 }

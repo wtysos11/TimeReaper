@@ -10,8 +10,13 @@
 
     <Page.BottomAppBar>
         <CommandBar>
-            <AppBarButton Name="AppBarCreateButton" Icon="Add" Label="创建新任务"/>
-            <AppBarButton Name="AppBarSettingButton" Icon="Setting" Label="详细设置"/>
+            <AppBarButton Name="AppBarCreateButton" 
+                          Icon="Add" 
+                          Click="CreateNewItem"
+                          Label="创建新任务"/>
+            <AppBarButton Name="AppBarSettingButton" 
+                          Icon="Setting" 
+                          Label="详细设置"/>
         </CommandBar>
     </Page.BottomAppBar>
     
@@ -70,6 +75,7 @@
                           RelativePanel.AlignVerticalCenterWithPanel="True" 
                           Name="MainTopCreate" 
                           Icon="Add" Label="创建" 
+                          Click="CreateNewItem"
                           Margin="5"/>
         </RelativePanel>
         <Grid Grid.Row="1" Grid.ColumnSpan="2">
