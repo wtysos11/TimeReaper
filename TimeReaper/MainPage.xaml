@@ -123,7 +123,7 @@
                                         <CheckBox Height="32" Width="32" VerticalAlignment="Center" IsChecked="{Binding isDoing,Mode=TwoWay}"/>
                                         <TextBlock Text="提交" Width="180" Margin="30,6,0,0"/>
                                     </Grid>
-                                    
+
                                     <AppBarButton Grid.Column="4" Icon="Setting" IsCompact="True" VerticalAlignment="Center">
                                         <AppBarButton.Flyout>
                                             <MenuFlyout>
@@ -181,5 +181,4 @@
             </StackPanel>
         </Grid>
     </Grid>
-
 </Page>
