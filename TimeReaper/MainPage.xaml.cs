@@ -225,26 +225,6 @@ namespace TimeReaper
 
         }
 
-        void createTimer(DateTimeOffset startTime)
-        {
-            var timer = new DispatcherTimer();
-            timer.Interval = new TimeSpan(0, 0, 1);
-            if (timerState == 1)
-            {
-                timer.Tick += Timer_Tick;
-                beginTime = startTime;
-                needPress = false;
-                timer.Start();
-            }
-            else if (timerState == 2)
-            {
-                timer.Tick += Pomotodo_Tick;
-                beginTime = startTime;
-                work = true;
-                needPress = false;
-                timer.Start();
-            }
-        }
 
         //计时器开始计时
         /*
@@ -262,6 +242,7 @@ namespace TimeReaper
 
             if (timer == null)
             {
+                Media_SourceSelect(1);
                 string timerMode = (MainTopSelect.SelectedValue as ComboBoxItem).Content.ToString();
                 if (timerMode.Equals("正常计时"))
                 {
@@ -271,7 +252,23 @@ namespace TimeReaper
                 {
                     timerState = 2;
                 }
-                createTimer(DateTimeOffset.Now);
+                timer = new DispatcherTimer();
+                timer.Interval = new TimeSpan(0, 0, 1);
+                if (timerState == 1)
+                {
+                    timer.Tick += Timer_Tick;
+                    beginTime = DateTimeOffset.Now;
+                    needPress = false;
+                    timer.Start();
+                }
+                else if (timerState == 2)
+                {
+                    timer.Tick += Pomotodo_Tick;
+                    beginTime = DateTimeOffset.Now;
+                    work = true;
+                    needPress = false;
+                    timer.Start();
+                }
             }
             else
             {
@@ -280,6 +277,7 @@ namespace TimeReaper
                 {
                     if (needPress)
                     {
+                        Media_SourceSelect(2);
                         if (pomotodoPeriod == pomotodoRestInterval)//第3次为长休息，休息完以后归0
                         {
                             pomotodoPeriod = 0;
@@ -310,12 +308,14 @@ namespace TimeReaper
                 {
                     if (!needPress)
                     {
+                        Media_SourceSelect(1);
                         needPress = true;
                         MainTopStart.Content = "暂停，点击提交";
                     }
                     else
                     {
                         //提交任务，按钮恢复
+                        Media_SourceSelect(1);
                         needPress = false;
                         foreach (ListItem listitem in timeReaper.AllItems)
                         {
@@ -349,6 +349,7 @@ namespace TimeReaper
             }
             if (timer != null)
             {
+                Media_SourceSelect(3);
                 timer.Stop();
                 endTime = DateTimeOffset.Now;
                 timer = null;
@@ -475,7 +476,6 @@ namespace TimeReaper
                 needPress = timeReaper.cacheNeedPress;
                 work = timeReaper.cacheWork;
                 isBack = true;
-                //createTimer(beginTime);
                 var timer = new DispatcherTimer();
                 timer.Interval = new TimeSpan(0, 0, 1);
                 if (timerState == 1)
@@ -542,6 +542,28 @@ namespace TimeReaper
             request.Data.Properties.Description = timeReaper.SelectedItem.notes;
             request.Data.SetWebLink(new Uri("http://seattletimes.com/ABPub/2006/01/10/2002732410.jpg"));
             deferral.Complete();
+        }
+
+        //吴槟负责的多媒体部分
+        /*根据传入的信号，选择不同的播放器播放不同的音频*/
+        private void Media_SourceSelect(int module)
+        {
+            /*点击按钮*/
+            if (module == 1)
+            {
+                _startPlayer.Play();
+
+            }
+            /*休息提示*/
+            else if (module == 2)
+            {
+                _restPlayer.Play();
+            }
+            /*取消任务*/
+            else if (module == 3)
+            {
+                _stopPlayer.Play();
+            }
         }
     }
     //传递给设置页的对象

@@ -58,6 +58,14 @@
         </Grid.RowDefinitions>
         <TextBlock Name="headerTextBlock" Text="Time Reaper" Visibility="Collapsed" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="20,0,0,0" FontSize="48" FontWeight="SemiBold"/>
         <!-- 主页面顶层设计，暂时用来放：开始计时相关 -->
+        <RelativePanel Grid.Column="1" Grid.Row="0" Height="150" Width="2" HorizontalAlignment="Left">
+            <MediaElement x:Name="_startPlayer" AutoPlay="False" AreTransportControlsEnabled="false" 
+                           IsFullWindow="False" Source="Assets/start.mp3"/>
+            <MediaElement x:Name="_restPlayer" AutoPlay="False" AreTransportControlsEnabled="false" 
+                           IsFullWindow="False" Source="Assets/rest.mp3"/>
+            <MediaElement x:Name="_stopPlayer" AutoPlay="False" AreTransportControlsEnabled="false" 
+                           IsFullWindow="False" Source="Assets/stop.mp3"/>
+        </RelativePanel>
         <RelativePanel Name="topPanel" Grid.Row="0" Height="150" HorizontalAlignment="Center" Width="480">
             <ComboBox RelativePanel.AlignVerticalCenterWithPanel="True" 
                       RelativePanel.LeftOf="MainTopStart" 

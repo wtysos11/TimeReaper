@@ -125,6 +125,9 @@
     <Content Include="Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
     <Content Include="Assets\StoreLogo.png" />
     <Content Include="Assets\Wide310x150Logo.scale-200.png" />
+    <Content Include="Assets\rest.mp3" />
+    <Content Include="Assets\start.mp3" />
+    <Content Include="Assets\stop.mp3" />
     <Content Include="Tile.xml" />
   </ItemGroup>
   <ItemGroup>
