@@ -48,7 +48,6 @@ namespace TimeReaper
         /*检查输入合法性,未完成*/
         bool checkValid()
         {
-            if()
             return true;
         }
 

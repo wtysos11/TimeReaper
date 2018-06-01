@@ -8,6 +8,9 @@
     mc:Ignorable="d">
 
     <Grid Style="{StaticResource ApplicationPageBackgroundThemeBrush}">
+        <Grid.Background>
+            <ImageBrush Stretch="Fill" ImageSource="Assets/background.png"/>
+        </Grid.Background>
         <RelativePanel HorizontalAlignment="Center">
             <TextBlock Name="CreateTopTitle" 
                        Text="创建新的任务"

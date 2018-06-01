@@ -20,7 +20,10 @@
         </CommandBar>
     </Page.BottomAppBar>
 
-    <Grid Style="{StaticResource ApplicationPageBackgroundThemeBrush}">
+    <Grid>
+        <Grid.Background>
+            <ImageBrush Stretch="Fill" ImageSource="Assets/background.png"/>
+        </Grid.Background>
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup x:Name="VisualStateGroup">
                 <VisualState x:Name="VisualStateMin0">
@@ -111,14 +114,25 @@
                                         <ColumnDefinition Width="60"/>
                                         <ColumnDefinition Width="150"/>
                                         <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Text="{x:Bind title}" Grid.Column="1" VerticalAlignment="Center"/>
                                     <CheckBox Grid.Column="0" Height="32" Width="32" VerticalAlignment="Center" IsChecked="{Binding completed,Mode=TwoWay}"/>
+                                    <TextBlock Text="{x:Bind title}" Grid.Column="1" VerticalAlignment="Center"/>
+                                    <TextBlock Text="{x:Bind deadline}" Grid.Column="2" VerticalAlignment="Center"/>
                                     <Grid Grid.Column="3" VerticalAlignment="Center" Width="80" HorizontalAlignment="Right">
                                         <CheckBox Height="32" Width="32" VerticalAlignment="Center" IsChecked="{Binding isDoing,Mode=TwoWay}"/>
                                         <TextBlock Text="提交" Width="180" Margin="30,6,0,0"/>
                                     </Grid>
-                                    <TextBlock Text="{x:Bind deadline}" Grid.Column="2" VerticalAlignment="Center"/>
+                                    
+                                    <AppBarButton Grid.Column="4" Icon="Setting" IsCompact="True" VerticalAlignment="Center">
+                                        <AppBarButton.Flyout>
+                                            <MenuFlyout>
+                                                <MenuFlyoutItem Text="Edit"/>
+                                                <MenuFlyoutItem Text="Delete"/>
+                                                <MenuFlyoutItem Text="Share"/>
+                                            </MenuFlyout>
+                                        </AppBarButton.Flyout>
+                                    </AppBarButton>
                                 </Grid>
                             </DataTemplate>
                         </ListView.ItemTemplate>
