@@ -172,6 +172,7 @@ namespace TimeReaper
             }
             else
             {
+                //番茄钟工作状态
                 if (timerState == 2)
                 {
                     if (needPress)
@@ -201,6 +202,7 @@ namespace TimeReaper
                         needPress = false;
                     }
                 }
+                //正常计时状态
                 else if (timerState == 1)
                 {
                     if (!needPress)
@@ -210,6 +212,7 @@ namespace TimeReaper
                     }
                     else
                     {
+                        //提交任务，按钮恢复
                         needPress = false;
                         foreach (ListItem listitem in timeReaper.AllItems)
                         {
@@ -260,7 +263,7 @@ namespace TimeReaper
         {
             Frame.Navigate(typeof(CreatePage));
         }
-
+        //前往编辑页面（编辑与创造的区别在于timeReaper.SelectedItem是否为空）
         private void MenuFlyEdit_Click(object sender, RoutedEventArgs e)
         {
             var datacontext = (sender as FrameworkElement).DataContext;
@@ -293,6 +296,7 @@ namespace TimeReaper
             timeReaper.RemoveTaskitem((TaskItem)item.Content);
         }
 
+        //前往设置页面
         private void AppBarSettingButton_Click(object sender, RoutedEventArgs e)
         {
             var parameters = new SettingParameterPassing();
@@ -303,10 +307,11 @@ namespace TimeReaper
             Frame.Navigate(typeof(SettingPage), parameters);
         }
 
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+        async protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             if(!e.Parameter.Equals(""))
             { 
+                //更新设置
                 var parameters = (SettingParameterPassing)e.Parameter;
                 if (parameters != null)
                 {
@@ -314,6 +319,16 @@ namespace TimeReaper
                     pomotodoShortBreak = parameters.pomotodoShortBreak;
                     pomotodoLongBreak = parameters.pomotodoLongBreak;
                     pomotodoRestInterval = parameters.pomotodoRestInterval;
+
+                    /*每次修改的时候更新文件缓存*/
+                    StorageFolder localFolder = ApplicationData.Current.LocalFolder;
+                    string format="";
+                    format += pomotodoWorkInterval + " ";
+                    format += pomotodoShortBreak + " ";
+                    format += pomotodoLongBreak + " ";
+                    format += pomotodoRestInterval + " ";
+                    StorageFile file = await localFolder.CreateFileAsync("dataFile.txt", CreationCollisionOption.ReplaceExisting);
+                    await FileIO.WriteTextAsync(file, format);
                 }
             }
 

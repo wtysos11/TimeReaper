@@ -7,6 +7,7 @@ using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Storage;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -38,7 +39,7 @@ namespace TimeReaper
         /// 将在启动应用程序以打开特定文件等情况下使用。
         /// </summary>
         /// <param name="e">有关启动请求和过程的详细信息。</param>
-        protected override void OnLaunched(LaunchActivatedEventArgs e)
+        async protected override void OnLaunched(LaunchActivatedEventArgs e)
         {
             Frame rootFrame = Window.Current.Content as Frame;
 
@@ -66,10 +67,25 @@ namespace TimeReaper
             {
                 if (rootFrame.Content == null)
                 {
-                    // 当导航堆栈尚未还原时，导航到第一页，
-                    // 并通过将所需信息作为导航参数传入来配置
-                    // 参数
-                    rootFrame.Navigate(typeof(MainPage), e.Arguments);
+                    // 最开始的时候应用会通过这里进入主界面
+                    // 如果在这里读入设置文件，就可以起到维护用户个人设置的功能。
+                    StorageFolder localFolder = ApplicationData.Current.LocalFolder;
+                    StorageFile file = await localFolder.GetFileAsync("dataFile.txt");
+                    String format = await FileIO.ReadTextAsync(file);
+
+                    if(!format.Equals(""))
+                    {
+                        var strAns = format.Split(' ');
+                        var parameters = new SettingParameterPassing();
+                        parameters.pomotodoWorkInterval = Int32.Parse(strAns[0]);
+                        parameters.pomotodoShortBreak = Int32.Parse(strAns[1]);
+                        parameters.pomotodoLongBreak = Int32.Parse(strAns[2]);
+                        parameters.pomotodoRestInterval = Int32.Parse(strAns[3]);
+
+                        rootFrame.Navigate(typeof(MainPage), parameters);
+                    }
+                    else
+                        rootFrame.Navigate(typeof(MainPage), e.Arguments);
                 }
                 // 确保当前窗口处于活动状态
                 Window.Current.Activate();
