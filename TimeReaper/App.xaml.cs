@@ -69,12 +69,15 @@ namespace TimeReaper
                 {
                     // 最开始的时候应用会通过这里进入主界面
                     // 如果在这里读入设置文件，就可以起到维护用户个人设置的功能。
-                    StorageFolder localFolder = ApplicationData.Current.LocalFolder;
-                    StorageFile file = await localFolder.GetFileAsync("dataFile.txt");
-                    String format = await FileIO.ReadTextAsync(file);
 
-                    if(!format.Equals(""))
-                    {
+                    var checkItem = await ApplicationData.Current.LocalFolder.TryGetItemAsync("dataFile.txt");
+                    if(checkItem!=null)
+                    { 
+                        StorageFolder localFolder = ApplicationData.Current.LocalFolder;
+                        StorageFile file = await localFolder.GetFileAsync("dataFile.txt");
+                        String format = await FileIO.ReadTextAsync(file);
+
+
                         var strAns = format.Split(' ');
                         var parameters = new SettingParameterPassing();
                         parameters.pomotodoWorkInterval = Int32.Parse(strAns[0]);

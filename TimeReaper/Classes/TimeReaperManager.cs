@@ -37,6 +37,7 @@ namespace TimeReaper.Classes
         public DispatcherTimer cacheTimer;
         public bool cacheNeedPress;
         public bool cacheWork;
+        public bool firstVisit=false;
 
         string FixedData(string current, int x)
         {

@@ -17,6 +17,8 @@ using System.Diagnostics;
 // https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x804 上介绍了“空白页”项模板
 using TimeReaper.Classes;
 using Windows.Storage;
+using Windows.UI.Popups;
+using Windows.ApplicationModel.DataTransfer;
 
 namespace TimeReaper
 {
@@ -31,7 +33,12 @@ namespace TimeReaper
             timeReaper = TimeReaperManager.getInstance();
             timer = null;
             timerState = 0;
-
+            if(!timeReaper.firstVisit)
+            {
+                timeReaper.firstVisit = true;
+                DataTransferManager dataTransferManager = DataTransferManager.GetForCurrentView();
+                dataTransferManager.DataRequested += OnShareDataRequested;
+            }
         }
         //储存结构
         TimeReaperManager timeReaper;
@@ -475,6 +482,29 @@ namespace TimeReaper
                 timeReaper.cacheTimer = timer;
                 timeReaper.cacheTimerState = -1;
             }
+            
+        }
+        //吴成文：分享指定文件
+        //分享指定文件
+        private void MenuFlyShare_Click(object sender, RoutedEventArgs e)
+        {
+            var datacontext = (sender as FrameworkElement).DataContext;
+            var item = MainLeftItemList.ContainerFromItem(datacontext) as ListViewItem;
+            timeReaper.SelectedItem = (ListItem)(item.Content);
+
+            DataTransferManager.ShowShareUI();
+        }
+
+        public void OnShareDataRequested(DataTransferManager sender, DataRequestedEventArgs args)
+        {
+            DataRequest request = args.Request;
+            var deferral = args.Request.GetDeferral();
+
+            request.Data.Properties.Title = timeReaper.SelectedItem.title;
+            request.Data.SetText(timeReaper.SelectedItem.notes);
+            request.Data.Properties.Description = timeReaper.SelectedItem.notes;
+            request.Data.SetWebLink(new Uri("http://seattletimes.com/ABPub/2006/01/10/2002732410.jpg"));
+            deferral.Complete();
         }
     }
     //传递给设置页的对象

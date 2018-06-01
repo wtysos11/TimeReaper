@@ -133,7 +133,7 @@
                                             <MenuFlyout>
                                                 <MenuFlyoutItem Text="Edit" Click="MenuFlyEdit_Click"/>
                                                 <MenuFlyoutItem Text="Delete" Click="MenuFlyDelete_Click"/>
-                                                <MenuFlyoutItem Text="Share"/>
+                                                <MenuFlyoutItem Text="Share" Click="MenuFlyShare_Click"/>
                                             </MenuFlyout>
                                         </AppBarButton.Flyout>
                                     </AppBarButton>
