@@ -11,12 +11,16 @@
     <Page.BottomAppBar>
         <CommandBar>
             <AppBarButton Name="AppBarCreateButton" 
-                          Icon="Add" 
                           Click="CreateNewItem"
+                          Icon="Add" 
                           Label="创建新任务"/>
             <AppBarButton Name="AppBarSettingButton" 
+                          Click="AppBarSettingButton_Click"
                           Icon="Setting" 
                           Label="详细设置"/>
+            <AppBarButton Name="AppBarShareButton"
+                          Icon="Share"
+                          Label="发送报告"/>
         </CommandBar>
     </Page.BottomAppBar>
 

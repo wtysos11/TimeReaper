@@ -16,6 +16,7 @@ using System.Diagnostics;
 
 // https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x804 上介绍了“空白页”项模板
 using TimeReaper.Classes;
+using Windows.Storage;
 
 namespace TimeReaper
 {
@@ -45,13 +46,14 @@ namespace TimeReaper
         int pomotodoWorkInterval = 1;//默认为25分钟
         int pomotodoShortBreak = 1;//默认为5分钟
         int pomotodoLongBreak = 2;//默认为15分钟
-        int pomotodoPeriod = 0;//短休息数量，3次短休息后一次长休息，当pomotodoPeriod==3时进行一次长休息
+        int pomotodoRestInterval = 3;//短休息数量，3次短休息后一次长休息，当pomotodoPeriod==3时进行一次长休息
+        int pomotodoPeriod = 0;//现在已经过了多少 个短休息
         bool work = false;//是否处于休息状态
-        
+
         /*正计时函数*/
         private void Timer_Tick(object sender, object e)
         {
-            if(!needPress)
+            if (!needPress)
             {
                 int realHour = DateTimeOffset.Now.Hour - beginTime.Hour;
                 int realMinute = DateTimeOffset.Now.Minute - beginTime.Minute;
@@ -77,7 +79,7 @@ namespace TimeReaper
         }
 
         /*番茄计时函数*/
-        private void Pomotodo_Tick(object sender, object e )
+        private void Pomotodo_Tick(object sender, object e)
         {
             int realHour = DateTimeOffset.Now.Hour - beginTime.Hour;
             int realMinute = DateTimeOffset.Now.Minute - beginTime.Minute;
@@ -97,7 +99,7 @@ namespace TimeReaper
             {
                 needMinute = pomotodoWorkInterval;
             }
-            else if (!work && pomotodoPeriod == 3)
+            else if (!work && pomotodoPeriod == pomotodoRestInterval)
             {
                 needMinute = pomotodoLongBreak;
             }
@@ -112,7 +114,7 @@ namespace TimeReaper
             if (realMinute == -1 && realSecond == 60)//计时器倒计时达到界限
             {
                 needPress = true;
-                if(work)
+                if (work)
                 {
                     MainTopStart.Content = "点击休息";
                 }
@@ -122,7 +124,7 @@ namespace TimeReaper
                 }
             }
 
-            if(needPress)
+            if (needPress)
             {
                 return;//等待用户按下按钮，计时器暂停
             }
@@ -145,12 +147,12 @@ namespace TimeReaper
          */
         private void MainTopStart_Click(object sender, RoutedEventArgs e)
         {
-            if(timer==null)
+            if (timer == null)
             {
                 string timerMode = (MainTopSelect.SelectedValue as ComboBoxItem).Content.ToString();
                 timer = new DispatcherTimer();
                 timer.Interval = new TimeSpan(0, 0, 1);
-                if(timerMode.Equals("正常计时"))
+                if (timerMode.Equals("正常计时"))
                 {
                     timerState = 1;
                     timer.Tick += Timer_Tick;
@@ -158,7 +160,7 @@ namespace TimeReaper
                     needPress = false;
                     timer.Start();
                 }
-                else if(timerMode.Equals("番茄钟计时"))
+                else if (timerMode.Equals("番茄钟计时"))
                 {
                     timerState = 2;
                     timer.Tick += Pomotodo_Tick;
@@ -172,9 +174,9 @@ namespace TimeReaper
             {
                 if (timerState == 2)
                 {
-                    if(needPress)
+                    if (needPress)
                     {
-                        if (pomotodoPeriod == 3)//第3次为长休息，休息完以后归0
+                        if (pomotodoPeriod == pomotodoRestInterval)//第3次为长休息，休息完以后归0
                         {
                             pomotodoPeriod = 0;
                         }
@@ -182,12 +184,12 @@ namespace TimeReaper
                             pomotodoPeriod++;
 
 
-                        
+
                         if (work)//工作结束，将列表中提交的任务进行结束计时装载
                         {
                             foreach (ListItem listitem in timeReaper.AllItems)
                             {
-                                if(listitem.isDoing)
+                                if (listitem.isDoing)
                                 {
                                     timeReaper.AddTaskItem(listitem.getId(), beginTime, DateTimeOffset.Now);
                                     listitem.isDoing = false;
@@ -199,7 +201,7 @@ namespace TimeReaper
                         needPress = false;
                     }
                 }
-                else if(timerState == 1)
+                else if (timerState == 1)
                 {
                     if (!needPress)
                     {
@@ -211,12 +213,12 @@ namespace TimeReaper
                         needPress = false;
                         foreach (ListItem listitem in timeReaper.AllItems)
                         {
-                            if(listitem.isDoing)
+                            if (listitem.isDoing)
                             {
                                 timeReaper.AddTaskItem(listitem.getId(), beginTime, DateTimeOffset.Now);
                                 listitem.isDoing = false;
                             }
-                            
+
                         }
                         MainTopStart.Content = "开始计时";
                         timer.Stop();
@@ -233,7 +235,7 @@ namespace TimeReaper
              */
         private void MainTopCancel_Click(object sender, RoutedEventArgs e)
         {
-            if(timer!=null)
+            if (timer != null)
             {
                 timer.Stop();
                 endTime = DateTimeOffset.Now;
@@ -290,6 +292,40 @@ namespace TimeReaper
             var item = MainLeftTaskList.ContainerFromItem(datacontext) as ListViewItem;
             timeReaper.RemoveTaskitem((TaskItem)item.Content);
         }
+
+        private void AppBarSettingButton_Click(object sender, RoutedEventArgs e)
+        {
+            var parameters = new SettingParameterPassing();
+            parameters.pomotodoLongBreak = pomotodoLongBreak;
+            parameters.pomotodoShortBreak = pomotodoShortBreak;
+            parameters.pomotodoWorkInterval = pomotodoWorkInterval;
+            parameters.pomotodoRestInterval = pomotodoRestInterval;
+            Frame.Navigate(typeof(SettingPage), parameters);
+        }
+
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            if(!e.Parameter.Equals(""))
+            { 
+                var parameters = (SettingParameterPassing)e.Parameter;
+                if (parameters != null)
+                {
+                    pomotodoWorkInterval = parameters.pomotodoWorkInterval;
+                    pomotodoShortBreak = parameters.pomotodoShortBreak;
+                    pomotodoLongBreak = parameters.pomotodoLongBreak;
+                    pomotodoRestInterval = parameters.pomotodoRestInterval;
+                }
+            }
+
+        }
+    }
+    //传递给设置页的对象
+    public class SettingParameterPassing
+    {
+        public int pomotodoWorkInterval = 1;//默认为25分钟
+        public int pomotodoShortBreak = 1;//默认为5分钟
+        public int pomotodoLongBreak = 2;//默认为15分钟
+        public int pomotodoRestInterval = 3;//短休息数量，3次短休息后一次长休息，当pomotodoPeriod==3时进行一次长休息
     }
  
 }
