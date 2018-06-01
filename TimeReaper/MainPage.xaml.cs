@@ -238,6 +238,7 @@ namespace TimeReaper
             {
                 timer = timeReaper.cacheTimer;
                 isBack = false;
+                timeReaper.cacheTimer = null;
             }
 
             if (timer == null)
@@ -346,6 +347,7 @@ namespace TimeReaper
             {
                 timer = timeReaper.cacheTimer;
                 isBack = false;
+                timeReaper.cacheTimer = null;
             }
             if (timer != null)
             {
@@ -365,20 +367,27 @@ namespace TimeReaper
         private void MainLeftItemList_ItemClick(object sender, ItemClickEventArgs e)
         {
             timeReaper.SelectedItem = e.ClickedItem as ListItem;
-            timeReaper.cacheBeginTime = beginTime;
-            timeReaper.cacheTimerState = timerState;
-            timeReaper.cacheNeedPress = needPress;
-            timeReaper.cacheWork = work;
+            if(timer!=null)
+            {
+                timeReaper.cacheBeginTime = beginTime;
+                timeReaper.cacheTimerState = timerState;
+                timeReaper.cacheNeedPress = needPress;
+                timeReaper.cacheWork = work;
+            }
+
             Frame.Navigate(typeof(CreatePage));
         }
 
         /*创建新的任务，跳转到新的页面*/
         private void CreateNewItem(object sender, RoutedEventArgs e)
         {
-            timeReaper.cacheBeginTime = beginTime;
-            timeReaper.cacheTimerState = timerState;
-            timeReaper.cacheNeedPress = needPress;
-            timeReaper.cacheWork = work;
+            if (timer != null)
+            {
+                timeReaper.cacheBeginTime = beginTime;
+                timeReaper.cacheTimerState = timerState;
+                timeReaper.cacheNeedPress = needPress;
+                timeReaper.cacheWork = work;
+            }
             Frame.Navigate(typeof(CreatePage));
         }
         //前往编辑页面（编辑与创造的区别在于timeReaper.SelectedItem是否为空）
@@ -388,10 +397,13 @@ namespace TimeReaper
             var item = MainLeftItemList.ContainerFromItem(datacontext) as ListViewItem;
             timeReaper.SelectedItem = (ListItem)(item.Content);
 
-            timeReaper.cacheBeginTime = beginTime;
-            timeReaper.cacheTimerState = timerState;
-            timeReaper.cacheNeedPress = needPress;
-            timeReaper.cacheWork = work;
+            if (timer != null)
+            {
+                timeReaper.cacheBeginTime = beginTime;
+                timeReaper.cacheTimerState = timerState;
+                timeReaper.cacheNeedPress = needPress;
+                timeReaper.cacheWork = work;
+            }
 
             Frame.Navigate(typeof(CreatePage));
         }
@@ -433,10 +445,14 @@ namespace TimeReaper
             parameters.pomotodoWorkInterval = pomotodoWorkInterval;
             parameters.pomotodoRestInterval = pomotodoRestInterval;
 
-            timeReaper.cacheBeginTime = beginTime;
-            timeReaper.cacheTimerState = timerState;
-            timeReaper.cacheNeedPress = needPress;
-            timeReaper.cacheWork = work;
+            if(timer!=null)
+            {
+                timeReaper.cacheBeginTime = beginTime;
+                timeReaper.cacheTimerState = timerState;
+                timeReaper.cacheNeedPress = needPress;
+                timeReaper.cacheWork = work;
+            }
+            
 
             Frame.Navigate(typeof(SettingPage), parameters);
         }

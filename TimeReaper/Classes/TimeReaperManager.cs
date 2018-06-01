@@ -33,8 +33,8 @@ namespace TimeReaper.Classes
         }
         //应用间缓存
         public DateTimeOffset cacheBeginTime;
-        public int cacheTimerState;
-        public DispatcherTimer cacheTimer;
+        public int cacheTimerState = -1;
+        public DispatcherTimer cacheTimer=null;
         public bool cacheNeedPress;
         public bool cacheWork;
         public bool firstVisit=false;
