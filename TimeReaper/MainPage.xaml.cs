@@ -519,6 +519,7 @@ namespace TimeReaper
                 timeReaper.cacheTimer = timer;
                 timeReaper.cacheTimerState = -1;
             }
+            timeReaper.SelectedItem = null;
             UpdateTile();
         }
         //吴成文：分享指定文件
