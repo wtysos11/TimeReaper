@@ -43,6 +43,11 @@ namespace TimeReaper
                 CreateDDLDateInput.Date = timeReaper.SelectedItem.deadline;
                 CreateDDLTimeInput.Time = new TimeSpan(timeReaper.SelectedItem.deadline.Hour, timeReaper.SelectedItem.deadline.Minute, 0);
             }
+            else
+            {
+                CreateTitleInput.Text = "";
+                CreateNoteInput.Text = "";
+            }
         }
 
         /*检查输入合法性,未完成*/
