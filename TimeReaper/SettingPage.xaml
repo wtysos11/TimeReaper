@@ -11,7 +11,7 @@
         <Grid.Background>
             <ImageBrush Stretch="Fill" ImageSource="Assets/background.png"/>
         </Grid.Background>
-        <RelativePanel HorizontalAlignment="Center" Width="400">
+        <RelativePanel HorizontalAlignment="Center" Width="400" Margin="40">
             <TextBlock Name="SettingTopTitle"
                        Text="具体设置"
                        FontSize="32"
@@ -20,15 +20,17 @@
             <TextBlock Name="SettingPomotodoTitle"
                        Text="番茄钟相关"
                        RelativePanel.Below="SettingTopTitle"
-                       FontSize="28"
-                       Margin="20"/>
+                       FontSize="24"
+                       FontWeight="SemiBold"
+                       Margin="16,20,0,10"/>
             <TextBlock Name="SettingWorkIntervalText"
                        Text="工作间隔"
                        RelativePanel.Below="SettingPomotodoTitle"
                        Margin="15"/>
             <TextBox   Name="SettingWorkIntervalInput"
                        RelativePanel.AlignVerticalCenterWith="SettingWorkIntervalText"
-                       RelativePanel.RightOf="SettingWorkIntervalText"/>
+                       RelativePanel.RightOf="SettingWorkIntervalText"
+                       Margin="15"/>
             <TextBlock Name="SettingShortBreakText"
                        Text="短休息时间"
                        RelativePanel.Below="SettingWorkIntervalText"
@@ -55,7 +57,10 @@
                        RelativePanel.AlignHorizontalCenterWithPanel="True"
                        Style="{StaticResource generalButton}"
                        Click="SettingChangeButton_Click"
-                       Content="提交修改"/>
+                       Content="提交修改"
+                       Width="180"
+                       Height="50"
+                       FontSize="24"/>
         </RelativePanel>
     </Grid>
 </Page>

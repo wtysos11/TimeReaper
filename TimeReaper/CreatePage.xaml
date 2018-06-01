@@ -11,44 +11,34 @@
         <Grid.Background>
             <ImageBrush Stretch="Fill" ImageSource="Assets/background.png"/>
         </Grid.Background>
-        <RelativePanel HorizontalAlignment="Center" >
+        <RelativePanel HorizontalAlignment="Center" Margin="40">
             <TextBlock Name="CreateTopTitle" 
                        Text="创建新的任务"
-                       RelativePanel.AlignHorizontalCenterWithPanel="True" />
-            <TextBlock Name="CreateTitleText" Text="标题" 
-                       TextWrapping="Wrap" 
-                       Height="32" Width="180" FontSize="24" 
-                       RelativePanel.Below="CreateTopTitle" 
-                       Margin="0,5,0,5"/>
-            <TextBox Name="CreateTitleInput" 
+                       RelativePanel.AlignHorizontalCenterWithPanel="True"
+                       FontSize="32"
+                       FontWeight="Bold"/>
+            <TextBox Name="CreateTitleInput"
+                     Header="标题"
                      Text="" 
-                     Height="67" Width="400" FontSize="24" 
-                     RelativePanel.Below="CreateTitleText" 
+                     Width="320" 
+                     RelativePanel.Below="CreateTopTitle" 
                      Margin="0,10,0,10"/>
-            <TextBlock Name="CreateNoteText" 
-                       Text="备注" TextWrapping="Wrap" 
-                       Height="32" Width="180" FontSize="24" 
-                       RelativePanel.Below="CreateTitleInput" 
-                       Margin="0,5,0,5"/>
             <TextBox Name="CreateNoteInput" 
+                     Header="备注"
                      Text="" 
-                     Height="67" Width="400" FontSize="24" 
-                     RelativePanel.Below="CreateNoteText"
+                     TextWrapping="Wrap"
+                     Height="120" Width="320" 
+                     RelativePanel.Below="CreateTitleInput"
                      Margin="0,10,0,10"/>
-            
-            <TextBlock Name="CreateDDLText" 
-                       Text="截止日期" TextWrapping="Wrap" 
-                       Height="32" Width="180" FontSize="24" 
-                       RelativePanel.Below="CreateNoteInput" 
-                       Margin="0,5,0,5"/>
             <DatePicker Name="CreateDDLDateInput" 
+                        Header="截止日期"
                         VerticalAlignment="Top" 
-                        RelativePanel.Below="CreateDDLText" 
+                        RelativePanel.Below="CreateNoteInput" 
                         Margin="0,10,0,10" 
-                        Width="400"/>
+                        Width="320"/>
             <TimePicker Name="CreateDDLTimeInput"
                        RelativePanel.Below="CreateDDLDateInput"
-                        Width="400"/>
+                        Width="320"/>
             <Button Name="CreateButton" 
                     Content="Create" 
                     RelativePanel.Below="CreateDDLTimeInput"

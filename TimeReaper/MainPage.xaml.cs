@@ -67,16 +67,16 @@ namespace TimeReaper
                 textElements[1].InnerText = timeReaper.AllItems[i].notes;
                 // 中磁贴
                 textElements[2].InnerText = timeReaper.AllItems[i].title;
-                textElements[3].InnerText = timeReaper.AllItems[i].notes;
-                textElements[4].InnerText = timeReaper.AllItems[i].deadline.ToString();
+                textElements[3].InnerText = timeReaper.AllItems[i].deadline.ToString();
+                textElements[4].InnerText = timeReaper.AllItems[i].notes;
                 // 宽磁贴
                 textElements[5].InnerText = timeReaper.AllItems[i].title;
-                textElements[6].InnerText = timeReaper.AllItems[i].notes;
-                textElements[7].InnerText = timeReaper.AllItems[i].deadline.ToString();
+                textElements[6].InnerText = timeReaper.AllItems[i].deadline.ToString();
+                textElements[7].InnerText = timeReaper.AllItems[i].notes;
                 // 大磁贴
                 textElements[8].InnerText = timeReaper.AllItems[i].title;
-                textElements[9].InnerText = timeReaper.AllItems[i].notes;
-                textElements[10].InnerText = timeReaper.AllItems[i].deadline.ToString();
+                textElements[9].InnerText = timeReaper.AllItems[i].deadline.ToString();
+                textElements[10].InnerText = timeReaper.AllItems[i].notes;
                 var tileNotification = new TileNotification(document);
                 TileUpdateManager.CreateTileUpdaterForApplication().Update(tileNotification);
                 TileUpdateManager.CreateTileUpdaterForApplication().EnableNotificationQueue(true);
