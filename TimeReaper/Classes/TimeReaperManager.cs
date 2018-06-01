@@ -31,10 +31,27 @@ namespace TimeReaper.Classes
             return _instance;
         }
 
+        string FixedData(string current, int x)
+        {
+            if (x < 10)
+                return "0" + current;
+            else
+                return current;
+        }
+        string getTimeStr(DateTimeOffset date)
+        {
+            string year = FixedData(date.Year.ToString(), date.Year);
+            string month = FixedData(date.Month.ToString(), date.Month);
+            string day = FixedData(date.Day.ToString(), date.Day);
+            string hour = FixedData(date.Hour.ToString(), date.Hour);
+            string minute = FixedData(date.Minute.ToString(), date.Minute);
+
+            return year + "-" + month + "-" + day + " " + hour + ":" + minute + ":00";
+        }
         public TimeReaperManager()
         {
             conn = new SQLiteConnection("timeReaper.db");
-            using (var statement = conn.Prepare("CREATE TABLE IF NOT EXISTS todolist (id CHAR(36),title VARCHAR(255),notes VARCHAR(255),deadline DATE, PRIMARY KEY (id));"))
+            using (var statement = conn.Prepare("CREATE TABLE IF NOT EXISTS todolist (id CHAR(36),title VARCHAR(255),notes VARCHAR(255),deadline DATETIME, PRIMARY KEY (id));"))
             {
                 statement.Step();
             }
@@ -70,11 +87,7 @@ namespace TimeReaper.Classes
                 statement.Bind(1, item.getId());
                 statement.Bind(2, item.title);
                 statement.Bind(3, item.notes);
-
-                DateTimeFormatInfo dateFormat = new DateTimeFormatInfo();
-                dateFormat.ShortDatePattern = "yyyy/MM/dd";
-                DateTime nowTime = Convert.ToDateTime(item.deadline, dateFormat);
-                statement.Bind(4, nowTime.Year.ToString() + "-" + nowTime.Month.ToString() + "-" + nowTime.Day.ToString());
+                statement.Bind(4, time);
                 statement.Step();
             }
         }
@@ -122,9 +135,9 @@ namespace TimeReaper.Classes
                 statement.Bind(2, item.notes);
 
                 DateTimeFormatInfo dateFormat = new DateTimeFormatInfo();
-                dateFormat.ShortDatePattern = "yyyy/MM/dd";
+                dateFormat.ShortDatePattern = "yyyy/MM/dd/hh/mm/ss";
                 DateTime nowTime = Convert.ToDateTime(item.deadline, dateFormat);
-                statement.Bind(3, nowTime.Year.ToString() + "-" + nowTime.Month.ToString() + "-" + nowTime.Day.ToString());
+                statement.Bind(3, nowTime.Year.ToString() + "-" + nowTime.Month.ToString() + "-" + nowTime.Day.ToString() + " " + nowTime.Hour.ToString() + ":" + nowTime.Minute.ToString() + ":00");
                 statement.Bind(4, item.getId());
 
                 statement.Step();

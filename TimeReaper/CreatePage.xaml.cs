@@ -37,11 +37,31 @@ namespace TimeReaper
             return true;
         }
 
+        //补零
+        string FixedData(string current,int x)
+        {
+            if (x < 10)
+                return "0" + current;
+            else
+                return current;
+        }
+
+        string getTimeStr(DateTimeOffset date,TimeSpan time)
+        {
+            string year = FixedData(date.Year.ToString(), date.Year);
+            string month = FixedData(date.Month.ToString(), date.Month);
+            string day = FixedData(date.Day.ToString(), date.Day);
+            string hour = FixedData(time.Hours.ToString(), time.Hours);
+            string minute = FixedData(time.Minutes.ToString(), time.Minutes);
+
+            return year + "-" + month + "-" + day + " " + hour + ":" + minute + ":00";
+        }
+
         private void CreateButton_Click(object sender, RoutedEventArgs e)
         {
             if(checkValid())
             {
-                string timeStr = CreateDDLDateInput.Date.ToString();
+                string timeStr = getTimeStr(CreateDDLDateInput.Date,CreateDDLTimeInput.Time);
                 timeReaper.AddTodoItem(CreateTitleInput.Text, CreateNoteInput.Text, timeStr);
                 Frame.Navigate(typeof(MainPage));
             }
@@ -52,6 +72,7 @@ namespace TimeReaper
             CreateTitleInput.Text = "";
             CreateNoteInput.Text = "";
             CreateDDLDateInput.Date = DateTimeOffset.Now;
+            CreateDDLTimeInput.Time = new TimeSpan(DateTimeOffset.Now.Hour, DateTimeOffset.Now.Minute, 0);
         }
     }
 }

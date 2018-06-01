@@ -53,7 +53,7 @@ namespace TimeReaper.Classes
         public void SetTime(string deadline)
         {
             DateTimeFormatInfo dateFormat = new DateTimeFormatInfo();
-            dateFormat.ShortDatePattern = "yyyy/MM/dd";
+            dateFormat.ShortDatePattern = "yyyy/MM/dd/hh/mm/ss";
             DateTime nowTime = Convert.ToDateTime(deadline, dateFormat);
             this.deadline = nowTime;
             //this.deadline = DateTime.Now;
