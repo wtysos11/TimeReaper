@@ -128,7 +128,7 @@
                                         <AppBarButton.Flyout>
                                             <MenuFlyout>
                                                 <MenuFlyoutItem Text="Edit" Click="MenuFlyEdit_Click"/>
-                                                <MenuFlyoutItem Text="Delete"/>
+                                                <MenuFlyoutItem Text="Delete" Click="MenuFlyDelete_Click"/>
                                                 <MenuFlyoutItem Text="Share"/>
                                             </MenuFlyout>
                                         </AppBarButton.Flyout>
@@ -141,7 +141,7 @@
                 <!-- 已完成计时任务，平时不显示，宽度不够时显示出来 -->
                 <TextBlock Name="MainLeftTextBlock" Grid.Row="2" Text="已完成的计时任务" FontWeight="SemiBold" Margin="40,0,0,0"/>
                 <ScrollViewer Name="MainLeftDoneTask" Grid.Row="3">
-                    <ListView Height="300" ItemsSource="{x:Bind timeReaper.AllTasks}">
+                    <ListView  Name="MainLeftTaskList" Height="300" ItemsSource="{x:Bind timeReaper.AllTasks}">
                         <ListView.ItemTemplate>
                             <DataTemplate x:DataType="md:TaskItem">
                                 <Grid Height="100">
@@ -153,6 +153,10 @@
                                     <TextBlock Grid.Column="0" Text="{x:Bind title}"/>
                                     <TextBlock Grid.Column="1" Text="{x:Bind formatBeginTime}"/>
                                     <TextBlock Grid.Column="2" Text="{x:Bind formatEndTime}"/>
+                                    <AppBarButton Grid.Column="3" 
+                                              Label="删除"
+                                              Icon="Delete"
+                                              Click="DeleteTaskItem_Click2"/>
                                 </Grid>
                             </DataTemplate>
                         </ListView.ItemTemplate>
@@ -170,10 +174,15 @@
                                     <ColumnDefinition Width="2*"/>
                                     <ColumnDefinition Width="3*"/>
                                     <ColumnDefinition Width="3*"/>
+                                    <ColumnDefinition Width="3*"/>
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Grid.Column="0" Text="{x:Bind title}"/>
                                 <TextBlock Grid.Column="1" Text="{x:Bind formatBeginTime}"/>
                                 <TextBlock Grid.Column="2" Text="{x:Bind formatEndTime}"/>
+                                <AppBarButton Grid.Column="3" 
+                                              Label="删除"
+                                              Icon="Delete"
+                                              Click="DeleteTaskItem_Click"/>
                             </Grid>
                         </DataTemplate>
                     </ListView.ItemTemplate>

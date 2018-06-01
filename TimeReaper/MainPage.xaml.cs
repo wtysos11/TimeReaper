@@ -266,6 +266,30 @@ namespace TimeReaper
             timeReaper.SelectedItem = (ListItem)(item.Content);
             Frame.Navigate(typeof(CreatePage));
         }
+
+        //删除指定文件
+        private void MenuFlyDelete_Click(object sender, RoutedEventArgs e)
+        {
+            var datacontext = (sender as FrameworkElement).DataContext;
+            var item = MainLeftItemList.ContainerFromItem(datacontext) as ListViewItem;
+            timeReaper.SelectedItem = (ListItem)(item.Content);
+            timeReaper.RemoveTodoItem(timeReaper.SelectedItem);
+            timeReaper.SelectedItem = null;
+        }
+
+        /*删除已经完成的任务计时*/
+        private void DeleteTaskItem_Click(object sender, RoutedEventArgs e)
+        {
+            var datacontext = (sender as FrameworkElement).DataContext;
+            var item = MainRightDoneTask.ContainerFromItem(datacontext) as ListViewItem;
+            timeReaper.RemoveTaskitem((TaskItem)item.Content);
+        }
+        private void DeleteTaskItem_Click2(object sender, RoutedEventArgs e)
+        {
+            var datacontext = (sender as FrameworkElement).DataContext;
+            var item = MainLeftTaskList.ContainerFromItem(datacontext) as ListViewItem;
+            timeReaper.RemoveTaskitem((TaskItem)item.Content);
+        }
     }
  
 }
