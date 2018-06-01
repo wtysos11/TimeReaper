@@ -35,13 +35,14 @@ namespace TimeReaper
         }
         //储存结构
         TimeReaperManager timeReaper;
-
+        
         //计时器相关
-        DispatcherTimer timer;
-        DateTimeOffset beginTime;
-        DateTimeOffset endTime;
+        DispatcherTimer timer;//计时器本体
+        DateTimeOffset beginTime;//表示开始计时的时间
+        DateTimeOffset endTime;//现在暂时没有实际作用
         int timerState;//0表示没有工作，1表示正常计时，2表示番茄钟计时
         bool needPress = false;//用户是否需要按下按钮（计时器抵达终点或者用户暂停，按钮等待点击以提交任务）
+        bool isBack = false;//是否从外层页面回来。情况：从外层页面回来，如果在OnNavigated中创建计时器会被自动销毁。使用timeReaper进行规避
         //番茄钟相关
         int pomotodoWorkInterval = 1;//默认为25分钟
         int pomotodoShortBreak = 1;//默认为5分钟
@@ -50,32 +51,77 @@ namespace TimeReaper
         int pomotodoPeriod = 0;//现在已经过了多少 个短休息
         bool work = false;//是否处于休息状态
 
+        //常用函数：可以根据beginTime生成按钮上的正常计时信息
+        private string getTimerStr()
+        {
+            int realHour = DateTimeOffset.Now.Hour - beginTime.Hour;
+            int realMinute = DateTimeOffset.Now.Minute - beginTime.Minute;
+            int realSecond = DateTimeOffset.Now.Second - beginTime.Second;
+            if (realSecond< 0)
+            {
+                realSecond += 60;
+                realMinute--;
+            }
+            if (realHour > 0)
+            {
+                realMinute += realHour* 60;
+            }
+
+            string strMinute = realMinute.ToString();
+            string strSecond = realSecond.ToString();
+            if (realSecond< 10)
+            {
+                strSecond = "0" + strSecond;
+            }
+            return strMinute + ":" + strSecond;
+        }
+
         /*正计时函数*/
         private void Timer_Tick(object sender, object e)
         {
             if (!needPress)
             {
-                int realHour = DateTimeOffset.Now.Hour - beginTime.Hour;
-                int realMinute = DateTimeOffset.Now.Minute - beginTime.Minute;
-                int realSecond = DateTimeOffset.Now.Second - beginTime.Second;
-                if (realSecond < 0)
-                {
-                    realSecond += 60;
-                    realMinute--;
-                }
-                if (realHour > 0)
-                {
-                    realMinute += realHour * 60;
-                }
-
-                string strMinute = realMinute.ToString();
-                string strSecond = realSecond.ToString();
-                if (realSecond < 10)
-                {
-                    strSecond = "0" + strSecond;
-                }
-                MainTopStart.Content = strMinute + ":" + strSecond;
+                MainTopStart.Content = getTimerStr();
             }
+        }
+
+        //临时函数：根据已有的beginTime生成番茄时间，确保不会超出范围.
+        private string getPomotodoTime()
+        {
+            int realHour = DateTimeOffset.Now.Hour - beginTime.Hour;
+            int realMinute = DateTimeOffset.Now.Minute - beginTime.Minute;
+            int realSecond = DateTimeOffset.Now.Second - beginTime.Second;
+            if (realSecond < 0)
+            {
+                realSecond += 60;
+                realMinute--;
+            }
+            if (realHour > 0)
+            {
+                realMinute += realHour * 60;
+            }
+            int needMinute;
+            if (work)
+            {
+                needMinute = pomotodoWorkInterval;
+            }
+            else if (!work && pomotodoPeriod == pomotodoRestInterval)
+            {
+                needMinute = pomotodoLongBreak;
+            }
+            else
+            {
+                needMinute = pomotodoShortBreak;
+            }
+            realMinute = needMinute - realMinute - 1;
+            realSecond = 60 - realSecond;
+            string strMinute = realMinute.ToString();
+            string strSecond = realSecond.ToString();
+            if (realSecond < 10)
+            {
+                strSecond = "0" + strSecond;
+            }
+            return strMinute + ":" + strSecond;
         }
 
         /*番茄计时函数*/
@@ -139,6 +185,27 @@ namespace TimeReaper
 
         }
 
+        void createTimer(DateTimeOffset startTime)
+        {
+            var timer = new DispatcherTimer();
+            timer.Interval = new TimeSpan(0, 0, 1);
+            if (timerState == 1)
+            {
+                timer.Tick += Timer_Tick;
+                beginTime = startTime;
+                needPress = false;
+                timer.Start();
+            }
+            else if (timerState == 2)
+            {
+                timer.Tick += Pomotodo_Tick;
+                beginTime = startTime;
+                work = true;
+                needPress = false;
+                timer.Start();
+            }
+        }
+
         //计时器开始计时
         /*
          用DateTimeOffset.Now记录下开始时间
@@ -147,28 +214,24 @@ namespace TimeReaper
          */
         private void MainTopStart_Click(object sender, RoutedEventArgs e)
         {
+            if(isBack)
+            {
+                timer = timeReaper.cacheTimer;
+                isBack = false;
+            }
+
             if (timer == null)
             {
                 string timerMode = (MainTopSelect.SelectedValue as ComboBoxItem).Content.ToString();
-                timer = new DispatcherTimer();
-                timer.Interval = new TimeSpan(0, 0, 1);
                 if (timerMode.Equals("正常计时"))
                 {
                     timerState = 1;
-                    timer.Tick += Timer_Tick;
-                    beginTime = DateTimeOffset.Now;
-                    needPress = false;
-                    timer.Start();
                 }
                 else if (timerMode.Equals("番茄钟计时"))
                 {
                     timerState = 2;
-                    timer.Tick += Pomotodo_Tick;
-                    beginTime = DateTimeOffset.Now;
-                    work = true;
-                    needPress = false;
-                    timer.Start();
                 }
+                createTimer(DateTimeOffset.Now);
             }
             else
             {
@@ -238,6 +301,11 @@ namespace TimeReaper
              */
         private void MainTopCancel_Click(object sender, RoutedEventArgs e)
         {
+            if (isBack)
+            {
+                timer = timeReaper.cacheTimer;
+                isBack = false;
+            }
             if (timer != null)
             {
                 timer.Stop();
@@ -251,16 +319,24 @@ namespace TimeReaper
 
         /*
          * 点击元素进入修改界面
-             */
+         */
         private void MainLeftItemList_ItemClick(object sender, ItemClickEventArgs e)
         {
             timeReaper.SelectedItem = e.ClickedItem as ListItem;
+            timeReaper.cacheBeginTime = beginTime;
+            timeReaper.cacheTimerState = timerState;
+            timeReaper.cacheNeedPress = needPress;
+            timeReaper.cacheWork = work;
             Frame.Navigate(typeof(CreatePage));
         }
 
         /*创建新的任务，跳转到新的页面*/
         private void CreateNewItem(object sender, RoutedEventArgs e)
         {
+            timeReaper.cacheBeginTime = beginTime;
+            timeReaper.cacheTimerState = timerState;
+            timeReaper.cacheNeedPress = needPress;
+            timeReaper.cacheWork = work;
             Frame.Navigate(typeof(CreatePage));
         }
         //前往编辑页面（编辑与创造的区别在于timeReaper.SelectedItem是否为空）
@@ -269,6 +345,12 @@ namespace TimeReaper
             var datacontext = (sender as FrameworkElement).DataContext;
             var item = MainLeftItemList.ContainerFromItem(datacontext) as ListViewItem;
             timeReaper.SelectedItem = (ListItem)(item.Content);
+
+            timeReaper.cacheBeginTime = beginTime;
+            timeReaper.cacheTimerState = timerState;
+            timeReaper.cacheNeedPress = needPress;
+            timeReaper.cacheWork = work;
+
             Frame.Navigate(typeof(CreatePage));
         }
 
@@ -300,41 +382,103 @@ namespace TimeReaper
         private void AppBarSettingButton_Click(object sender, RoutedEventArgs e)
         {
             var parameters = new SettingParameterPassing();
+
             parameters.pomotodoLongBreak = pomotodoLongBreak;
             parameters.pomotodoShortBreak = pomotodoShortBreak;
             parameters.pomotodoWorkInterval = pomotodoWorkInterval;
             parameters.pomotodoRestInterval = pomotodoRestInterval;
+
+            timeReaper.cacheBeginTime = beginTime;
+            timeReaper.cacheTimerState = timerState;
+            timeReaper.cacheNeedPress = needPress;
+            timeReaper.cacheWork = work;
+
             Frame.Navigate(typeof(SettingPage), parameters);
         }
 
         async protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            if(!e.Parameter.Equals(""))
-            { 
-                //更新设置
-                var parameters = (SettingParameterPassing)e.Parameter;
-                if (parameters != null)
+            if (e.Parameter != null)
+            {
+                if (!e.Parameter.Equals(""))
                 {
-                    pomotodoWorkInterval = parameters.pomotodoWorkInterval;
-                    pomotodoShortBreak = parameters.pomotodoShortBreak;
-                    pomotodoLongBreak = parameters.pomotodoLongBreak;
-                    pomotodoRestInterval = parameters.pomotodoRestInterval;
+                    //更新设置
+                    var parameters = (SettingParameterPassing)e.Parameter;
+                    if (parameters != null)
+                    {
+                        pomotodoWorkInterval = parameters.pomotodoWorkInterval;
+                        pomotodoShortBreak = parameters.pomotodoShortBreak;
+                        pomotodoLongBreak = parameters.pomotodoLongBreak;
+                        pomotodoRestInterval = parameters.pomotodoRestInterval;
 
-                    /*每次修改的时候更新文件缓存*/
-                    StorageFolder localFolder = ApplicationData.Current.LocalFolder;
-                    string format="";
-                    format += pomotodoWorkInterval + " ";
-                    format += pomotodoShortBreak + " ";
-                    format += pomotodoLongBreak + " ";
-                    format += pomotodoRestInterval + " ";
-                    StorageFile file = await localFolder.CreateFileAsync("dataFile.txt", CreationCollisionOption.ReplaceExisting);
-                    await FileIO.WriteTextAsync(file, format);
+                        /*每次修改的时候更新文件缓存*/
+                        StorageFolder localFolder = ApplicationData.Current.LocalFolder;
+                        string format = "";
+                        format += pomotodoWorkInterval + " ";
+                        format += pomotodoShortBreak + " ";
+                        format += pomotodoLongBreak + " ";
+                        format += pomotodoRestInterval + " ";
+                        StorageFile file = await localFolder.CreateFileAsync("dataFile.txt", CreationCollisionOption.ReplaceExisting);
+                        await FileIO.WriteTextAsync(file, format);
+                    }
                 }
             }
 
+            if(timeReaper.cacheTimerState !=-1)
+            {
+                timerState = timeReaper.cacheTimerState;
+                beginTime = timeReaper.cacheBeginTime;
+                needPress = timeReaper.cacheNeedPress;
+                work = timeReaper.cacheWork;
+                isBack = true;
+                //createTimer(beginTime);
+                var timer = new DispatcherTimer();
+                timer.Interval = new TimeSpan(0, 0, 1);
+                if (timerState == 1)
+                {
+                    timer.Tick += Timer_Tick;
+                    needPress = false;
+                    timer.Start();
+                    //更改一下按钮的值以显得没有重新开始过
+                    if(needPress)
+                    {
+                        MainTopStart.Content = "暂停，点击提交";
+                    }
+                    else
+                    {
+                        MainTopStart.Content = getTimerStr();
+                    }
+                }
+                else if (timerState == 2)
+                {
+                    timer.Tick += Pomotodo_Tick;
+                    work = true;
+                    needPress = false;
+                    timer.Start();
+                    //更改一下按钮的值以显得没有重新开始过
+                    if(needPress)
+                    {
+                        if (work)
+                        {
+                            MainTopStart.Content = "点击休息";
+                        }
+                        else
+                        {
+                            MainTopStart.Content = "点击工作";
+                        }
+                    }
+                    else
+                    {
+                        MainTopStart.Content = getPomotodoTime();
+                    }
+                }
+                timeReaper.cacheTimer = timer;
+                timeReaper.cacheTimerState = -1;
+            }
         }
     }
     //传递给设置页的对象
+    //考虑加上计时器信息：在传递的时候计时器会被清零，如果加上必要的信息可以伪装成
     public class SettingParameterPassing
     {
         public int pomotodoWorkInterval = 1;//默认为25分钟

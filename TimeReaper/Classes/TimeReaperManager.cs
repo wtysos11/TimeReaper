@@ -6,6 +6,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.UI.Xaml;
 
 namespace TimeReaper.Classes
 {
@@ -30,6 +31,12 @@ namespace TimeReaper.Classes
 
             return _instance;
         }
+        //应用间缓存
+        public DateTimeOffset cacheBeginTime;
+        public int cacheTimerState;
+        public DispatcherTimer cacheTimer;
+        public bool cacheNeedPress;
+        public bool cacheWork;
 
         string FixedData(string current, int x)
         {
@@ -50,6 +57,7 @@ namespace TimeReaper.Classes
         }
         public TimeReaperManager()
         {
+            cacheTimerState = -1;
             conn = new SQLiteConnection("timeReaper.db");
             using (var statement = conn.Prepare("CREATE TABLE IF NOT EXISTS todolist (id CHAR(36),title VARCHAR(255),notes VARCHAR(255),deadline DATETIME, PRIMARY KEY (id));"))
             {
