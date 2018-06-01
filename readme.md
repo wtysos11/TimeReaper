@@ -32,3 +32,5 @@ NeedPress = false;
 使用=是比较两个String是否属于同一个对象，使用Equals才是比较两个String的内容是否相同。
 
 ### UI更新 2018.5.31 3:34
+
+### 更新了AdaptiveUI和LiveTiles 2018.6.1 19:40
