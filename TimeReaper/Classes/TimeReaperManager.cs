@@ -63,7 +63,7 @@ namespace TimeReaper.Classes
         public void AddTodoItem(string title, string notes, string time)
         {
 
-            this.allItems.Add(new ListItem(title, notes, time));
+            this.allItems.Add(new ListItem(title, time, notes));
             ListItem item = allItems[allItems.Count - 1];
             using (var statement = conn.Prepare("INSERT INTO todolist VALUES(?,?,?,?);"))
             {

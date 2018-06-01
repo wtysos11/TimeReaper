@@ -30,5 +30,28 @@ namespace TimeReaper
         }
 
         TimeReaperManager timeReaper;
+
+        /*检查输入合法性,未完成*/
+        bool checkValid()
+        {
+            return true;
+        }
+
+        private void CreateButton_Click(object sender, RoutedEventArgs e)
+        {
+            if(checkValid())
+            {
+                string timeStr = CreateDDLDateInput.Date.ToString();
+                timeReaper.AddTodoItem(CreateTitleInput.Text, CreateNoteInput.Text, timeStr);
+                Frame.Navigate(typeof(MainPage));
+            }
+        }
+
+        private void CancelButton_Click(object sender, RoutedEventArgs e)
+        {
+            CreateTitleInput.Text = "";
+            CreateNoteInput.Text = "";
+            CreateDDLDateInput.Date = DateTimeOffset.Now;
+        }
     }
 }
