@@ -187,8 +187,11 @@ namespace TimeReaper
                         {
                             foreach (ListItem listitem in timeReaper.AllItems)
                             {
-                                timeReaper.AddTaskItem(listitem.getId(), beginTime, DateTimeOffset.Now);
-                                listitem.isDoing = false;
+                                if(listitem.isDoing)
+                                {
+                                    timeReaper.AddTaskItem(listitem.getId(), beginTime, DateTimeOffset.Now);
+                                    listitem.isDoing = false;
+                                }
                             }
                         }
                         beginTime = DateTimeOffset.Now;
@@ -208,8 +211,12 @@ namespace TimeReaper
                         needPress = false;
                         foreach (ListItem listitem in timeReaper.AllItems)
                         {
-                            timeReaper.AddTaskItem(listitem.getId(), beginTime, DateTimeOffset.Now);
-                            listitem.isDoing = false;
+                            if(listitem.isDoing)
+                            {
+                                timeReaper.AddTaskItem(listitem.getId(), beginTime, DateTimeOffset.Now);
+                                listitem.isDoing = false;
+                            }
+                            
                         }
                         MainTopStart.Content = "开始计时";
                         timer.Stop();
@@ -249,6 +256,14 @@ namespace TimeReaper
         /*创建新的任务，跳转到新的页面*/
         private void CreateNewItem(object sender, RoutedEventArgs e)
         {
+            Frame.Navigate(typeof(CreatePage));
+        }
+
+        private void MenuFlyEdit_Click(object sender, RoutedEventArgs e)
+        {
+            var datacontext = (sender as FrameworkElement).DataContext;
+            var item = MainLeftItemList.ContainerFromItem(datacontext) as ListViewItem;
+            timeReaper.SelectedItem = (ListItem)(item.Content);
             Frame.Navigate(typeof(CreatePage));
         }
     }

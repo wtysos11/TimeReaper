@@ -7,11 +7,11 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <Grid Style="{StaticResource ApplicationPageBackgroundThemeBrush}">
+    <Grid>
         <Grid.Background>
             <ImageBrush Stretch="Fill" ImageSource="Assets/background.png"/>
         </Grid.Background>
-        <RelativePanel HorizontalAlignment="Center">
+        <RelativePanel HorizontalAlignment="Center" >
             <TextBlock Name="CreateTopTitle" 
                        Text="创建新的任务"
                        RelativePanel.AlignHorizontalCenterWithPanel="True" />

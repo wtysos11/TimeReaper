@@ -63,7 +63,7 @@ namespace TimeReaper.Classes
                     this.allItems.Add(item);
                 }
             }
-            using (var statement = conn.Prepare("CREATE TABLE IF NOT EXISTS tasklist (id CHAR(36),taskId CHAR(36),beginTime DATETIME,endtime DATETIME, PRIMARY KEY (taskId));"))
+            using (var statement = conn.Prepare("CREATE TABLE IF NOT EXISTS tasklist (id CHAR(36),title VARCHAR(255),notes VARCHAR(255),deadline DATETIME,taskId CHAR(36),beginTime DATETIME,endtime DATETIME, PRIMARY KEY (taskId));"))
             {
                 statement.Step();
             }
@@ -71,7 +71,7 @@ namespace TimeReaper.Classes
             {
                 while (statement.Step() == SQLiteResult.ROW)
                 {
-                    TaskItem task = createDoingTask((string)statement[0], (string)statement[1], (string)statement[2],(string) statement[3]);
+                    TaskItem task = createDoingTask((string)statement[0], (string)statement[1], (string)statement[2],(string) statement[3],(string)statement[4],(string)statement[5],(string)statement[6]);
                     this.allTasks.Add(task);
                 }
             }
@@ -95,12 +95,15 @@ namespace TimeReaper.Classes
         {
             TaskItem item = createDoingTask(id, beginTime, endTime);
             allTasks.Add(item);
-            using (var statement = conn.Prepare("INSERT INTO tasklist VALUES(?,?,?,?);"))
+            using (var statement = conn.Prepare("INSERT INTO tasklist VALUES(?,?,?,?,?,?,?);"))
             {
                 statement.Bind(1, item.getId());
-                statement.Bind(2, item.getTaskId());
-                statement.Bind(3, item.getStrTime(beginTime));
-                statement.Bind(4, item.getStrTime(endTime));
+                statement.Bind(2, item.title);
+                statement.Bind(3, item.notes);
+                statement.Bind(4, this.getTimeStr(item.deadline));
+                statement.Bind(5, item.getTaskId());
+                statement.Bind(6, item.getStrTime(beginTime));
+                statement.Bind(7, item.getStrTime(endTime));
                 
                 statement.Step();
             }
@@ -119,7 +122,7 @@ namespace TimeReaper.Classes
 
         public void RemoveTaskitem(TaskItem item)
         {
-            using (var statement = conn.Prepare("DELETE FROM tasklist WHERE id = ?;"))
+            using (var statement = conn.Prepare("DELETE FROM tasklist WHERE taskId = ?;"))
             {
                 statement.Bind(1, item.getTaskId());
                 statement.Step();
@@ -144,15 +147,17 @@ namespace TimeReaper.Classes
             }
             
         }
-
         public void UpdateTaskItem(TaskItem item)
         {
-            using (var statement = conn.Prepare("UPDATE tasklist SET id = ?,beginTime = ?,endTime = ? WHERE taskId = ?;"))
+            using (var statement = conn.Prepare("UPDATE tasklist SET id = ?,title=?,notes=?,deadline=?,beginTime = ?,endTime = ? WHERE taskId = ?;"))
             {
                 statement.Bind(1, item.getId());
-                statement.Bind(2, item.getStrTime(item.beginTime));
-                statement.Bind(3, item.getStrTime(item.endTime));
-                statement.Bind(4, item.getTaskId());
+                statement.Bind(2, item.title);
+                statement.Bind(3, item.notes);
+                statement.Bind(4, this.getTimeStr(item.deadline));
+                statement.Bind(5, item.getStrTime(item.beginTime));
+                statement.Bind(6, item.getStrTime(item.endTime));
+                statement.Bind(7, item.getTaskId());
 
                 statement.Step();
             }
@@ -198,6 +203,21 @@ namespace TimeReaper.Classes
             DateTimeOffset endTime = new DateTimeOffset(endtime);
             ListItem item = this.getListItem(id);
             return new TaskItem(item, beginTime, endTime,taskId);
+        }
+        //为数据库开的接口，不确定是否存在这样的id
+        public TaskItem createDoingTask(string id,string title,string notes,string deadline,string taskId,string bTime,string eTime)
+        {
+            DateTimeFormatInfo dateFormat = new DateTimeFormatInfo();
+            dateFormat.ShortDatePattern = "yyyy/MM/dd/hh/mm/ss";
+            DateTime begintime = Convert.ToDateTime(bTime, dateFormat);
+            DateTime endtime = Convert.ToDateTime(eTime, dateFormat);
+            DateTime deadtime = Convert.ToDateTime(deadline, dateFormat);
+            DateTimeOffset beginTime = new DateTimeOffset(begintime);
+            DateTimeOffset endTime = new DateTimeOffset(endtime);
+
+
+            return new TaskItem(id, title, notes, deadtime, taskId,beginTime, endTime);
+
         }
     }
 }

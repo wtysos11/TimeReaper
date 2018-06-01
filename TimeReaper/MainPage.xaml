@@ -127,7 +127,7 @@
                                     <AppBarButton Grid.Column="4" Icon="Setting" IsCompact="True" VerticalAlignment="Center">
                                         <AppBarButton.Flyout>
                                             <MenuFlyout>
-                                                <MenuFlyoutItem Text="Edit"/>
+                                                <MenuFlyoutItem Text="Edit" Click="MenuFlyEdit_Click"/>
                                                 <MenuFlyoutItem Text="Delete"/>
                                                 <MenuFlyoutItem Text="Share"/>
                                             </MenuFlyout>
@@ -151,8 +151,8 @@
                                         <ColumnDefinition Width="3*"/>
                                     </Grid.ColumnDefinitions>
                                     <TextBlock Grid.Column="0" Text="{x:Bind title}"/>
-                                    <TextBlock Grid.Column="1" Text="{x:Bind beginTime}"/>
-                                    <TextBlock Grid.Column="2" Text="{x:Bind endTime}"/>
+                                    <TextBlock Grid.Column="1" Text="{x:Bind formatBeginTime}"/>
+                                    <TextBlock Grid.Column="2" Text="{x:Bind formatEndTime}"/>
                                 </Grid>
                             </DataTemplate>
                         </ListView.ItemTemplate>
@@ -172,8 +172,8 @@
                                     <ColumnDefinition Width="3*"/>
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Grid.Column="0" Text="{x:Bind title}"/>
-                                <TextBlock Grid.Column="1" Text="{x:Bind beginTime}"/>
-                                <TextBlock Grid.Column="2" Text="{x:Bind endTime}"/>
+                                <TextBlock Grid.Column="1" Text="{x:Bind formatBeginTime}"/>
+                                <TextBlock Grid.Column="2" Text="{x:Bind formatEndTime}"/>
                             </Grid>
                         </DataTemplate>
                     </ListView.ItemTemplate>
