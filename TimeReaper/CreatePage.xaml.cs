@@ -31,6 +31,20 @@ namespace TimeReaper
 
         TimeReaperManager timeReaper;
 
+        //负责处理更改与创建之间的关系
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            if(timeReaper.SelectedItem!=null)
+            {
+                CreateTopTitle.Text = "更改任务信息";
+                CreateButton.Content = "Update";
+                CreateTitleInput.Text = timeReaper.SelectedItem.title;
+                CreateNoteInput.Text = timeReaper.SelectedItem.notes;
+                CreateDDLDateInput.Date = timeReaper.SelectedItem.deadline;
+                CreateDDLTimeInput.Time = new TimeSpan(timeReaper.SelectedItem.deadline.Hour, timeReaper.SelectedItem.deadline.Minute, 0);
+            }
+        }
+
         /*检查输入合法性,未完成*/
         bool checkValid()
         {
@@ -61,9 +75,23 @@ namespace TimeReaper
         {
             if(checkValid())
             {
-                string timeStr = getTimeStr(CreateDDLDateInput.Date,CreateDDLTimeInput.Time);
-                timeReaper.AddTodoItem(CreateTitleInput.Text, CreateNoteInput.Text, timeStr);
+                string timeStr = getTimeStr(CreateDDLDateInput.Date, CreateDDLTimeInput.Time);
+                if (timeReaper.SelectedItem==null)//创建
+                {
+                    timeReaper.AddTodoItem(CreateTitleInput.Text, CreateNoteInput.Text, timeStr);
+                    
+                }
+                else//更改
+                {
+                    ListItem item = timeReaper.SelectedItem;
+                    item.title = CreateTitleInput.Text;
+                    item.notes = CreateNoteInput.Text;
+                    item.SetTime(getTimeStr(CreateDDLDateInput.Date,CreateDDLTimeInput.Time));
+                    timeReaper.UpdateTodoItem(item);
+                    timeReaper.SelectedItem = null;
+                }
                 Frame.Navigate(typeof(MainPage));
+
             }
         }
 

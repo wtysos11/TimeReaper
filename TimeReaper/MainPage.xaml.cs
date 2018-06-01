@@ -238,27 +238,12 @@ namespace TimeReaper
         }
 
         /*
-         * 使用list<ListItem> 来维护将计时任务中曾工作过的对象
-         * 
-         主页面左侧列表的点击事件
-         如果番茄计时结束或正在进行计时的时候点击列表中的元素：
-            1.元素改变颜色
-            2.元素加入到删除列表之中
-        在番茄工作时间结束或是计时的中断：
-            更新并加入数据库中
+         * 点击元素进入修改界面
              */
         private void MainLeftItemList_ItemClick(object sender, ItemClickEventArgs e)
         {
-            ListItem listitem = e.ClickedItem as ListItem;
-            if(!listitem.isDoing)//加入删除列表
-            { 
-
-            }
-            else//移除删除列表
-            {
-
-            }
-            listitem.isDoing = !listitem.isDoing;
+            timeReaper.SelectedItem = e.ClickedItem as ListItem;
+            Frame.Navigate(typeof(CreatePage));
         }
 
         /*创建新的任务，跳转到新的页面*/
