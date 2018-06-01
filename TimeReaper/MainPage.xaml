@@ -146,18 +146,23 @@
                     <ListView  Name="MainLeftTaskList" Height="300" ItemsSource="{x:Bind timeReaper.AllTasks}">
                         <ListView.ItemTemplate>
                             <DataTemplate x:DataType="md:TaskItem">
-                                <Grid Height="100">
+                                <Grid Height="70">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="2*"/>
-                                        <ColumnDefinition Width="3*"/>
+                                        <ColumnDefinition Width="150"/>
+                                        <ColumnDefinition Width="20"/>
+                                        <ColumnDefinition Width="150"/>
+                                        <ColumnDefinition Width="20"/>
+                                        <ColumnDefinition Width="150"/>
                                         <ColumnDefinition Width="3*"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="0" Text="{x:Bind title}"/>
-                                    <TextBlock Grid.Column="1" Text="{x:Bind formatBeginTime}"/>
-                                    <TextBlock Grid.Column="2" Text="{x:Bind formatEndTime}"/>
-                                    <AppBarButton Grid.Column="3" 
+                                    <TextBlock Grid.Column="1" VerticalAlignment="Center" Text="{x:Bind title}"/>
+                                    <TextBlock Grid.Column="3" VerticalAlignment="Center" Text="{x:Bind formatBeginTime}"/>
+                                    <TextBlock Grid.Column="5" VerticalAlignment="Center" Text="{x:Bind formatEndTime}"/>
+                                    <AppBarButton Grid.Column="6" 
                                               Label="删除"
                                               Icon="Delete"
+                                              VerticalAlignment="Center"
                                               Click="DeleteTaskItem_Click2"/>
                                 </Grid>
                             </DataTemplate>
@@ -171,17 +176,21 @@
                 <ListView Name="MainRightDoneTask" ItemsSource="{x:Bind timeReaper.AllTasks}">
                     <ListView.ItemTemplate>
                         <DataTemplate x:DataType="md:TaskItem">
-                            <Grid Height="100">
+                            <Grid Height="70">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="2*"/>
-                                    <ColumnDefinition Width="3*"/>
-                                    <ColumnDefinition Width="3*"/>
+                                    <ColumnDefinition Width="150"/>
+                                    <ColumnDefinition Width="20"/>
+                                    <ColumnDefinition Width="150"/>
+                                    <ColumnDefinition Width="20"/>
+                                    <ColumnDefinition Width="150"/>
                                     <ColumnDefinition Width="3*"/>
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Grid.Column="0" Text="{x:Bind title}"/>
-                                <TextBlock Grid.Column="1" Text="{x:Bind formatBeginTime}"/>
-                                <TextBlock Grid.Column="2" Text="{x:Bind formatEndTime}"/>
-                                <AppBarButton Grid.Column="3" 
+                                <TextBlock Grid.Column="1" VerticalAlignment="Center" Text="{x:Bind title}"/>
+                                <TextBlock Grid.Column="3" VerticalAlignment="Center" Text="{x:Bind formatBeginTime}"/>
+                                <TextBlock Grid.Column="5" VerticalAlignment="Center" Text="{x:Bind formatEndTime}"/>
+                                <AppBarButton Grid.Column="6" 
+                                              VerticalAlignment="Center"
                                               Label="删除"
                                               Icon="Delete"
                                               Click="DeleteTaskItem_Click"/>
