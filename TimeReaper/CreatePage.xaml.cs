@@ -48,6 +48,7 @@ namespace TimeReaper
         /*检查输入合法性,未完成*/
         bool checkValid()
         {
+            if()
             return true;
         }
 
@@ -101,6 +102,80 @@ namespace TimeReaper
             CreateNoteInput.Text = "";
             CreateDDLDateInput.Date = DateTimeOffset.Now;
             CreateDDLTimeInput.Time = new TimeSpan(DateTimeOffset.Now.Hour, DateTimeOffset.Now.Minute, 0);
+        }
+        /*报错信息*/
+        private async void checkOut(int stateNum)
+        {
+            if (stateNum == 1)
+            {
+                ContentDialog warningDialog = new ContentDialog()
+                {
+                    Title = "Title和Details的内容为空",
+                    Content = "请先输入Title和Details的内容",
+                    PrimaryButtonText = "Ok"
+                };
+                ContentDialogResult result = await warningDialog.ShowAsync();
+            }
+            if (stateNum == 2)
+            {
+                ContentDialog warningDialog = new ContentDialog()
+                {
+                    Title = "Title的内容为空",
+                    Content = "请先输入Title的内容",
+                    PrimaryButtonText = "Ok"
+                };
+                ContentDialogResult result = await warningDialog.ShowAsync();
+            }
+            if (stateNum == 3)
+            {
+                ContentDialog warningDialog = new ContentDialog()
+                {
+                    Title = "Details的内容为空",
+                    Content = "请先输入Details的内容",
+                    PrimaryButtonText = "Ok"
+                };
+                ContentDialogResult result = await warningDialog.ShowAsync();
+            }
+            if (stateNum == 4)
+            {
+                ContentDialog warningDialog = new ContentDialog()
+                {
+                    Title = "Title和Details的内容为空,且日期不合法（大于等于今天）",
+                    Content = "请先输入Title和Details的内容并且修改日期",
+                    PrimaryButtonText = "Ok"
+                };
+                ContentDialogResult result = await warningDialog.ShowAsync();
+            }
+            if (stateNum == 5)
+            {
+                ContentDialog warningDialog = new ContentDialog()
+                {
+                    Title = "Title的内容为空，且日期不合法（需要大于等于今天）",
+                    Content = "请先输入Title的内容并且修改日期",
+                    PrimaryButtonText = "Ok"
+                };
+                ContentDialogResult result = await warningDialog.ShowAsync();
+            }
+            if (stateNum == 6)
+            {
+                ContentDialog warningDialog = new ContentDialog()
+                {
+                    Title = "Details的内容为空，且日期不合法（需要大于等于今天）",
+                    Content = "请先输入Details的内容并且修改日期",
+                    PrimaryButtonText = "Ok"
+                };
+                ContentDialogResult result = await warningDialog.ShowAsync();
+            }
+            if (stateNum == 7)
+            {
+                ContentDialog warningDialog = new ContentDialog()
+                {
+                    Title = "日期不合法（需要大于等于今天）",
+                    Content = "请修改日期",
+                    PrimaryButtonText = "Ok"
+                };
+                ContentDialogResult result = await warningDialog.ShowAsync();
+            }
         }
     }
 }

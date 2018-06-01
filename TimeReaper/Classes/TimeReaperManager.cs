@@ -38,7 +38,7 @@ namespace TimeReaper.Classes
             else
                 return current;
         }
-        string getTimeStr(DateTimeOffset date)
+        public string getTimeStr(DateTimeOffset date)
         {
             string year = FixedData(date.Year.ToString(), date.Year);
             string month = FixedData(date.Month.ToString(), date.Month);
