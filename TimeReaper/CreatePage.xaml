@@ -1,0 +1,61 @@
+﻿<Page
+    x:Class="TimeReaper.CreatePage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:TimeReaper"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid Style="{StaticResource ApplicationPageBackgroundThemeBrush}">
+        <RelativePanel HorizontalAlignment="Center">
+            <TextBlock Name="CreateTopTitle" 
+                       Text="创建新的任务"
+                       RelativePanel.AlignHorizontalCenterWithPanel="True" />
+            <TextBlock Name="CreateTitleText" Text="标题" 
+                       TextWrapping="Wrap" 
+                       Height="32" Width="180" FontSize="24" 
+                       RelativePanel.Below="CreateTopTitle" 
+                       Margin="0,5,0,5"/>
+            <TextBox Name="CreateTitleInput" 
+                     Text="" 
+                     Height="67" Width="400" FontSize="24" 
+                     RelativePanel.Below="CreateTitleText" 
+                     Margin="0,10,0,10"/>
+            <TextBlock Name="CreateNoteText" 
+                       Text="备注" TextWrapping="Wrap" 
+                       Height="32" Width="180" FontSize="24" 
+                       RelativePanel.Below="CreateTitleInput" 
+                       Margin="0,5,0,5"/>
+            <TextBox Name="CreateNoteInput" 
+                     Text="" 
+                     Height="67" Width="400" FontSize="24" 
+                     RelativePanel.Below="CreateNoteText"
+                     Margin="0,10,0,10"/>
+            
+            <TextBlock Name="CreateDDLText" 
+                       Text="截止日期" TextWrapping="Wrap" 
+                       Height="32" Width="180" FontSize="24" 
+                       RelativePanel.Below="CreateNoteInput" 
+                       Margin="0,5,0,5"/>
+            <DatePicker Name="CreateDDLDateInput" 
+                        VerticalAlignment="Top" 
+                        RelativePanel.Below="CreateDDLText" 
+                        Margin="0,10,0,10" 
+                        Width="400"/>
+            <TimePicker Name="CreateDDLTimeInput"
+                        Width="400"
+                        RelativePanel.Below="CreateDDLDateInput"/>
+            <Button Name="CreateButton" 
+                    Content="Create" 
+                    RelativePanel.Below="CreateDDLTimeInput"
+                    RelativePanel.AlignLeftWithPanel="True"
+                    Margin="0,20,0,50"/>
+            <Button Name="CancelButton" 
+                    Content="Cancel"
+                    RelativePanel.Below="CreateDDLTimeInput" 
+                    RelativePanel.AlignRightWithPanel="True" 
+                    Margin="0,20,0,50"/>
+        </RelativePanel>
+    </Grid>
+</Page>

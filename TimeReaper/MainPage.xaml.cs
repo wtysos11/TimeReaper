@@ -264,7 +264,7 @@ namespace TimeReaper
         /*创建新的任务，跳转到新的页面*/
         private void CreateNewItem(object sender, RoutedEventArgs e)
         {
-
+            Frame.Navigate(typeof(CreatePage));
         }
     }
  

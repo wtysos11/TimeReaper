@@ -20,10 +20,7 @@
         </CommandBar>
     </Page.BottomAppBar>
 
-    <Grid>
-        <Grid.Background>
-            <ImageBrush Stretch="Fill" ImageSource="Assets/background.png"/>
-        </Grid.Background>
+    <Grid Style="{StaticResource ApplicationPageBackgroundThemeBrush}">
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup x:Name="VisualStateGroup">
                 <VisualState x:Name="VisualStateMin0">
