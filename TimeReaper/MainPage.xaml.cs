@@ -17,6 +17,8 @@ using System.Diagnostics;
 // https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x804 上介绍了“空白页”项模板
 using TimeReaper.Classes;
 using Windows.Storage;
+using Windows.UI.Notifications;
+using Windows.Data.Xml.Dom;
 
 namespace TimeReaper
 {
@@ -31,7 +33,7 @@ namespace TimeReaper
             timeReaper = TimeReaperManager.getInstance();
             timer = null;
             timerState = 0;
-
+            UpdateTile();
         }
         //储存结构
         TimeReaperManager timeReaper;
@@ -50,6 +52,36 @@ namespace TimeReaper
         int pomotodoRestInterval = 3;//短休息数量，3次短休息后一次长休息，当pomotodoPeriod==3时进行一次长休息
         int pomotodoPeriod = 0;//现在已经过了多少 个短休息
         bool work = false;//是否处于休息状态
+
+        /*磁贴更新函数*/
+        private void UpdateTile()
+        {
+            TileUpdateManager.CreateTileUpdaterForApplication().Clear();
+            XmlDocument document = new XmlDocument();
+            document.LoadXml(System.IO.File.ReadAllText("Tile.xml"));
+            XmlNodeList textElements = document.GetElementsByTagName("text");
+            for (int i = 0; i < timeReaper.AllItems.Count; ++i)
+            {
+                // 小磁贴
+                textElements[0].InnerText = timeReaper.AllItems[i].title;
+                textElements[1].InnerText = timeReaper.AllItems[i].notes;
+                // 中磁贴
+                textElements[2].InnerText = timeReaper.AllItems[i].title;
+                textElements[3].InnerText = timeReaper.AllItems[i].notes;
+                textElements[4].InnerText = timeReaper.AllItems[i].deadline.ToString();
+                // 宽磁贴
+                textElements[5].InnerText = timeReaper.AllItems[i].title;
+                textElements[6].InnerText = timeReaper.AllItems[i].notes;
+                textElements[7].InnerText = timeReaper.AllItems[i].deadline.ToString();
+                // 大磁贴
+                textElements[8].InnerText = timeReaper.AllItems[i].title;
+                textElements[9].InnerText = timeReaper.AllItems[i].notes;
+                textElements[10].InnerText = timeReaper.AllItems[i].deadline.ToString();
+                var tileNotification = new TileNotification(document);
+                TileUpdateManager.CreateTileUpdaterForApplication().Update(tileNotification);
+                TileUpdateManager.CreateTileUpdaterForApplication().EnableNotificationQueue(true);
+            }
+        }
 
         //常用函数：可以根据beginTime生成按钮上的正常计时信息
         private string getTimerStr()
@@ -294,6 +326,7 @@ namespace TimeReaper
                 }
 
             }
+            UpdateTile();
         }
 
         /*取消计时函数
@@ -362,6 +395,7 @@ namespace TimeReaper
             timeReaper.SelectedItem = (ListItem)(item.Content);
             timeReaper.RemoveTodoItem(timeReaper.SelectedItem);
             timeReaper.SelectedItem = null;
+            UpdateTile();
         }
 
         /*删除已经完成的任务计时*/
@@ -370,12 +404,14 @@ namespace TimeReaper
             var datacontext = (sender as FrameworkElement).DataContext;
             var item = MainRightDoneTask.ContainerFromItem(datacontext) as ListViewItem;
             timeReaper.RemoveTaskitem((TaskItem)item.Content);
+            UpdateTile();
         }
         private void DeleteTaskItem_Click2(object sender, RoutedEventArgs e)
         {
             var datacontext = (sender as FrameworkElement).DataContext;
             var item = MainLeftTaskList.ContainerFromItem(datacontext) as ListViewItem;
             timeReaper.RemoveTaskitem((TaskItem)item.Content);
+            UpdateTile();
         }
 
         //前往设置页面
@@ -475,6 +511,7 @@ namespace TimeReaper
                 timeReaper.cacheTimer = timer;
                 timeReaper.cacheTimerState = -1;
             }
+            UpdateTile();
         }
     }
     //传递给设置页的对象

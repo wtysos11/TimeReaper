@@ -69,6 +69,7 @@ namespace TimeReaper
                 {
                     // 最开始的时候应用会通过这里进入主界面
                     // 如果在这里读入设置文件，就可以起到维护用户个人设置的功能。
+                    /*
                     StorageFolder localFolder = ApplicationData.Current.LocalFolder;
                     StorageFile file = await localFolder.GetFileAsync("dataFile.txt");
                     String format = await FileIO.ReadTextAsync(file);
@@ -85,7 +86,8 @@ namespace TimeReaper
                         rootFrame.Navigate(typeof(MainPage), parameters);
                     }
                     else
-                        rootFrame.Navigate(typeof(MainPage), e.Arguments);
+                        rootFrame.Navigate(typeof(MainPage), e.Arguments);*/
+                    rootFrame.Navigate(typeof(MainPage), e.Arguments);
                 }
                 // 确保当前窗口处于活动状态
                 Window.Current.Activate();

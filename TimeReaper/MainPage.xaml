@@ -43,9 +43,11 @@
                     <VisualState.Setters>
                         <Setter Target="MainLeftDoneTask.(UIElement.Visibility)" Value="Collapsed"/>
                         <Setter Target="MainLeftTextBlock.(UIElement.Visibility)" Value="Collapsed"/>
+                        <Setter Target="headerTextBlock.(UIElement.Visibility)" Value="Visible"/>
+                        <Setter Target="topPanel.(FrameWorkElement.HorizontalAlignment)" Value="Right"/>
                     </VisualState.Setters>
                     <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="1000"/>
+                        <AdaptiveTrigger MinWindowWidth="850"/>
                     </VisualState.StateTriggers>
                 </VisualState>
             </VisualStateGroup>
@@ -54,13 +56,9 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
-        <TextBlock Grid.Column="0" Text="Time Reaper" VerticalAlignment="Center" Margin="30,0,0,0" FontSize="64" FontWeight="Light"/>
+        <TextBlock Name="headerTextBlock" Text="Time Reaper" Visibility="Collapsed" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="20,0,0,0" FontSize="48" FontWeight="SemiBold"/>
         <!-- 主页面顶层设计，暂时用来放：开始计时相关 -->
-        <RelativePanel Grid.Column="1" Grid.Row="0" Height="150" HorizontalAlignment="Right" Width="480">
+        <RelativePanel Name="topPanel" Grid.Row="0" Height="150" HorizontalAlignment="Center" Width="480">
             <ComboBox RelativePanel.AlignVerticalCenterWithPanel="True" 
                       RelativePanel.LeftOf="MainTopStart" 
                       Width="160"
